@@ -10,10 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fabric-ds/react": "^1.5.2",
+    "bootstrap": "^5.3.3",
+    "fabric": "^5.3.0",
+    "l": "^0.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-bootstrap": "^2.10.2",
+    "react-design-editor": "^0.0.56",
+    "react-dom": "^18.2.0",
+    "sass": "^1.77.1"
   },
   "devDependencies": {
+    "@types/fabric": "^5.3.7",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
