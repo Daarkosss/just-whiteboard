@@ -1,14 +1,23 @@
-/* App.scss */
 .canvas-container {
-  width: 100vw;
+  width: 200px;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  z-index: 2;
 }
 
 .buttons-container {
   width: 200px;
   z-index: 2;
+
+  .button {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 60px;
+    font-size: 18px;
+    border: 1px solid #080080;
+  }
 }
 
 .App {
@@ -16,3 +25,42 @@
   height: 100%;
   display: flex;
 }
+
+.cursor-position {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.properties-panel {
+  position: absolute;
+  top: 70px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  z-index: 2;
+  width: 260px;
+  height: 600px;
+  background-color: #a9ceff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.header {
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 70px;
+  background-color: #bbbaba;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+  font-size: 24px;
+  padding: 10px 20px;
+}
+
