@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, CanvasInstance } from 'react-design-editor';
 import { fabric } from 'fabric';
-import { Button, ButtonGroup, Form, FormControl } from 'react-bootstrap';
+import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import { SketchPicker, ColorResult } from 'react-color';
 import { FaSquare, FaCircle } from 'react-icons/fa';
 import { BsFillTriangleFill } from "react-icons/bs";
@@ -12,6 +12,10 @@ const Whiteboard: React.FC = () => {
   const canvasRef = useRef<CanvasInstance>(null);
   const [color, setColor] = useState<string>('#000000');
   const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null);
+  const [fontSize, setFontSize] = useState<number | ''>('');
+  const [fontFamily, setFontFamily] = useState<string>('');
+  const [width, setWidth] = useState<number | ''>('');
+  const [height, setHeight] = useState<number | ''>('');
 
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
@@ -19,14 +23,30 @@ const Whiteboard: React.FC = () => {
       const handleSelection = () => {
         const activeObject = canvas.getActiveObject() as fabric.Object | null;
         setSelectedObject(activeObject);
-        setColor((activeObject?.get('fill') as string) || '#000000'); // Ustawienie koloru wybranego obiektu
+        setColor((activeObject?.get('fill') as string) || '#000000');
+        if (activeObject && 'fontSize' in activeObject) {
+          setFontSize(activeObject.fontSize as number);
+        } else {
+          setFontSize('');
+        }
+        if (activeObject && 'fontFamily' in activeObject) {
+          setFontFamily(activeObject.fontFamily as string);
+        } else {
+          setFontFamily('');
+        }
+        setWidth(activeObject?.width || '');
+        setHeight(activeObject?.height || '');
       };
 
       canvas.on('selection:created', handleSelection);
       canvas.on('selection:updated', handleSelection);
       canvas.on('selection:cleared', () => {
         setSelectedObject(null);
-        setColor('#000000'); // Resetowanie koloru, gdy nic nie jest zaznaczone
+        setColor('#000000');
+        setFontSize('');
+        setFontFamily('');
+        setWidth('');
+        setHeight('');
       });
 
       return () => {
@@ -34,7 +54,11 @@ const Whiteboard: React.FC = () => {
         canvas.off('selection:updated', handleSelection);
         canvas.off('selection:cleared', () => {
           setSelectedObject(null);
-          setColor('#000000'); // Resetowanie koloru, gdy nic nie jest zaznaczone
+          setColor('#000000');
+          setFontSize('');
+          setFontFamily('');
+          setWidth('');
+          setHeight('');
         });
       };
     }
@@ -103,8 +127,42 @@ const Whiteboard: React.FC = () => {
   const handleColorChange = (colorResult: ColorResult) => {
     const newColor = colorResult.hex;
     setColor(newColor);
+    console.log(newColor);
+    canvasRef?.current?.handler.setObject({ fill: newColor });
+  };
+
+  const handleFontSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFontSize = parseInt(e.target.value, 10) || 0;
+    setFontSize(newFontSize);
+    if (selectedObject && 'fontSize' in selectedObject) {
+      selectedObject.set('fontSize', newFontSize);
+      canvasRef.current?.handler.canvas.renderAll();
+    }
+  };
+
+  const handleFontFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newFontFamily = e.target.value;
+    setFontFamily(newFontFamily);
+    if (selectedObject && 'fontFamily' in selectedObject) {
+      selectedObject.set('fontFamily', newFontFamily);
+      canvasRef.current?.handler.canvas.renderAll();
+    }
+  };
+
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newWidth = parseInt(e.target.value, 10) || 0;
+    setWidth(newWidth);
     if (selectedObject) {
-      selectedObject.set('fill', newColor);
+      selectedObject.set('width', newWidth);
+      canvasRef.current?.handler.canvas.renderAll();
+    }
+  };
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newHeight = parseInt(e.target.value, 10) || 0;
+    setHeight(newHeight);
+    if (selectedObject) {
+      selectedObject.set('height', newHeight);
       canvasRef.current?.handler.canvas.renderAll();
     }
   };
@@ -145,57 +203,44 @@ const Whiteboard: React.FC = () => {
                 <Form>
                   <Form.Group controlId="formFontSize">
                     <Form.Label>Font Size</Form.Label>
-                    <FormControl
+                    <input
                       type="number"
-                      value={(selectedObject as fabric.Textbox).fontSize || ''}
-                      onChange={(e) => {
-                        const fontSize = parseInt(e.target.value, 10);
-                        (selectedObject as fabric.Textbox).set('fontSize', fontSize);
-                        canvasRef.current?.handler.canvas.renderAll();
-                      }}
+                      value={fontSize}
+                      onChange={handleFontSizeChange}
+                      className="form-control"
                     />
                   </Form.Group>
                   <Form.Group controlId="formFontFamily">
                     <Form.Label>Font Family</Form.Label>
-                    <FormControl
-                      as="select"
-                      value={(selectedObject as fabric.Textbox).fontFamily || ''}
-                      onChange={(e) => {
-                        (selectedObject as fabric.Textbox).set('fontFamily', e.target.value);
-                        canvasRef.current?.handler.canvas.renderAll();
-                      }}
+                    <select
+                      value={fontFamily}
+                      onChange={handleFontFamilyChange}
+                      className="form-control"
                     >
                       <option value="Arial">Arial</option>
-                      <option value="Helvetica">Helvetica</option>
                       <option value="Times New Roman">Times New Roman</option>
                       <option value="Courier New">Courier New</option>
-                    </FormControl>
+                    </select>
                   </Form.Group>
                 </Form>
               ) : (
                 <Form>
                   <Form.Group controlId="formObjectWidth">
                     <Form.Label>Width</Form.Label>
-                    <FormControl
+                    <input
                       type="number"
-                      value={selectedObject.get('width') || ''}
-                      onChange={(e) => {
-                        const width = parseInt(e.target.value, 10);
-                        selectedObject.set('width', width);
-                        canvasRef.current?.handler.canvas.renderAll();
-                      }}
+                      value={width}
+                      onChange={handleWidthChange}
+                      className="form-control"
                     />
                   </Form.Group>
                   <Form.Group controlId="formObjectHeight">
                     <Form.Label>Height</Form.Label>
-                    <FormControl
+                    <input
                       type="number"
-                      value={selectedObject.get('height') || ''}
-                      onChange={(e) => {
-                        const height = parseInt(e.target.value, 10);
-                        selectedObject.set('height', height);
-                        canvasRef.current?.handler.canvas.renderAll();
-                      }}
+                      value={height}
+                      onChange={handleHeightChange}
+                      className="form-control"
                     />
                   </Form.Group>
                 </Form>
