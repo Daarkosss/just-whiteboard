@@ -5,7 +5,7 @@ import { Button, ButtonGroup, Popover, OverlayTrigger } from 'react-bootstrap';
 import { SketchPicker, ColorResult } from 'react-color';
 import '../scss/main.scss';
 
-const Whiteboard: React.FC = () => {
+const Whiteboard: React.FC = () => {  
   const canvasRef = useRef<CanvasInstance>(null);
   const [color, setColor] = useState<string>('#000000'); // Domyślny kolor
   const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -18,7 +18,7 @@ const Whiteboard: React.FC = () => {
       if (pointer) {
         setCursorPosition({ x: pointer.x, y: pointer.y });
         // Aktualizuj pozycję "innego użytkownika" na podstawie naszego kursora z jakąś deltą
-        setOtherCursorPosition({ x: pointer.x + 50, y: pointer.y + 50 });
+        setOtherCursorPosition(calculateOtherCursorPosition({ x: pointer.x + 50, y: pointer.y + 50 }, canvas!));
       }
     };
 
@@ -29,32 +29,13 @@ const Whiteboard: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Dodaj wskaźnik "innego użytkownika" do kanwy
-    const canvas = canvasRef.current?.handler.canvas;
-    if (!canvas) return;
-
-    let otherCursor = findObjectByName(canvas, 'otherCursor');
-    if (!otherCursor) {
-      otherCursor = new fabric.Circle({
-        name: 'otherCursor',
-        radius: 5,
-        fill: 'red',
-        left: otherCursorPosition.x,
-        top: otherCursorPosition.y,
-        selectable: false,
-        evented: false,
-      });
-      canvas.add(otherCursor);
-    }
-
-    otherCursor.set({ left: otherCursorPosition.x, top: otherCursorPosition.y });
-    otherCursor.setCoords();
-    canvas.requestRenderAll();
-  }, [otherCursorPosition]);
-
-  const findObjectByName = (canvas: fabric.Canvas, name: string): fabric.Object | undefined => {
-    return canvas.getObjects().find(obj => obj.name === name);
+  const calculateOtherCursorPosition = (pointer: { x: number; y: number }, canvas: fabric.Canvas) => {
+    const zoom = canvas.getZoom();
+    const vpt = canvas.viewportTransform;
+    if (!vpt) return pointer;
+    const x = (pointer.x * zoom) + vpt[4];
+    const y = (pointer.y * zoom) + vpt[5];
+    return { x, y };
   };
 
   const addRectangle = () => {
@@ -116,7 +97,7 @@ const Whiteboard: React.FC = () => {
   );
 
   return (
-    <div className='canvas-container'>
+    <div className='canvas-container' style={{ position: 'relative' }}>
       <div className="cursor-position">
         Cursor Position: X: {cursorPosition.x}, Y: {cursorPosition.y}
       </div>
@@ -129,6 +110,20 @@ const Whiteboard: React.FC = () => {
           <Button className="button">Choose Color</Button>
         </OverlayTrigger>
       </ButtonGroup>
+      <div
+        className="other-cursor"
+        style={{
+          position: 'absolute',
+          left: otherCursorPosition.x,
+          top: otherCursorPosition.y,
+          width: '10px',
+          height: '10px',
+          backgroundColor: 'red',
+          borderRadius: '50%',
+          zIndex: 10,
+          pointerEvents: 'none',
+        }}
+      ></div>
       <Canvas
         ref={canvasRef}
         style={{ zIndex: 1 }}
