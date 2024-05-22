@@ -109,6 +109,8 @@ class CanvasStore {
       this.canvas?.remove(this.selectedObject);
       this.setSelectedObject(null);
       this.canvas?.renderAll();
+    } else {
+      console.error("Selected object is null");
     }
   }
 }

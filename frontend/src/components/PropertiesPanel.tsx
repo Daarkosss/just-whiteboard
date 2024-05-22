@@ -13,9 +13,9 @@ const PropertiesPanel: React.FC = observer(() => {
   };
 
   return (
-    <div className="properties-panel">
+    <div>
       {canvasStore.selectedObject ? (
-        <div>
+        <div className="properties-panel">
           {canvasStore.selectedObject.type === 'textbox' ? (
             <Form>
               <Form.Group controlId="formFontSize">
@@ -66,7 +66,7 @@ const PropertiesPanel: React.FC = observer(() => {
             <Form.Label>Color</Form.Label>
             <SketchPicker color={canvasStore.color} onChange={handleColorChange} />
           </Form.Group>
-          <Button variant="danger" onClick={canvasStore.removeSelectedObject}>
+          <Button variant="danger" onClick={() => canvasStore.removeSelectedObject()}>
             Remove Object
           </Button>
         </div>

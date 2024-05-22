@@ -1,4 +1,4 @@
-import UserStore from "../store/UserStore";
+import userStore from "../store/UserStore";
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
 const backendPort = import.meta.env.VITE_BACKEND_PORT || '8080';
@@ -43,7 +43,7 @@ class API {
       method,
       path,
       body,
-      { 'Authorization': `Bearer ${UserStore.userToken}` },
+      { 'Authorization': `Bearer ${userStore.userToken}` },
     );
   }
 }
