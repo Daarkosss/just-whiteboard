@@ -23,8 +23,8 @@ const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id }) => {
     const rect = new fabric.Rect({
       width: 50,
       height: 50,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
+      left: Math.random() * 200,
+      top: Math.random() * 200,
       fill: 'red',
       selectable: false,
       evented: false,
@@ -41,12 +41,6 @@ const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id }) => {
 
     canvas.add(rect, circle);
 
-    // Disable interaction on canvas
-    canvas.on('object:selected', () => {
-      canvas.discardActiveObject();
-    });
-
-    // Cleanup canvas on component unmount
     return () => {
       canvas.dispose();
     };
@@ -58,7 +52,7 @@ const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id }) => {
 
   return (
     <div className="whiteboard-thumbnail" onClick={handleClick}>
-      <canvas ref={canvasRef} width={150} height={150}></canvas>
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 };

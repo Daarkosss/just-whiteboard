@@ -15,18 +15,20 @@
     gap: 20px;
   }
 
-  .whiteboard-thumbnail {
-    cursor: pointer;
-    border: 1px solid #cccccc;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* src/components/WhiteboardThumbnail.scss */
+.whiteboard-thumbnail {
+  cursor: pointer;
+  width: 300px;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
 
-    canvas {
-      display: block;
-    }
+  .canvas-container {
+    pointer-events: none;
   }
-  .upper-canvas .lower-canvas {
-    cursor: pointer;
-  }
+}
+
 }
