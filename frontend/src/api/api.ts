@@ -7,89 +7,45 @@ export const PATH_PREFIX = `http://${backendHost}:${backendPort}/`;
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-
-export type Player = {
-    name: string,
-    starting: boolean
-}
-
-export type BoardOfNumbers = number[][]
-
-export type Room = {
-    roomName: string,
-    freeSlots: number,
-    player1: Player,
-    player2: Player
-}
-
-export interface GetRoomResponse extends Room {
-    type: string,
-    board: BoardOfNumbers,
-}
-
 class API {
 
-    async fetch<T>(
-        method: Method,
-        path: string,
-        body?: unknown,
-        headers: HeadersInit = {},
-    ): Promise<T> {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                ...headers
-            },
-            body: body ? JSON.stringify(body) : undefined,
-        } as RequestInit
+  async fetch<T>(
+    method: Method,
+    path: string,
+    body?: unknown,
+    headers: HeadersInit = {},
+  ): Promise<T> {
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    } as RequestInit
 
-        const response = await fetch(`${PATH_PREFIX}${path}`, options)
-        const data = await response.json();
+    const response = await fetch(`${PATH_PREFIX}${path}`, options)
+    const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.errorMessage || 'Wrong server response!');
-        } else {
-            return data;
-        }
+    if (!response.ok) {
+      throw new Error(data.errorMessage || 'Wrong server response!');
+    } else {
+      return data;
     }
+  }
 
-    async authorizedFetch<T>(
-        method: Method,
-        path: string,
-        body?: unknown
-      ): Promise<T> {
-        return this.fetch<T>(
-          method, 
-          path,
-          body,
-          {'Authorization': `Bearer ${UserStore.userToken}`},
-        );
-      }
-
-    async chooseRoomForPlayer(username: string): Promise<Room> {
-        const response = await this.authorizedFetch<Room>(
-            'POST', 
-            `rooms/findRoomForPlayer?playerName=${username}`, 
-        );
-        return response;
-    }
-
-    async deletePlayerFromRoom(roomName: string, username: string) {
-        const response = await this.authorizedFetch<Room>(
-            'DELETE', 
-            `rooms/removePlayerFromRoom?roomName=${roomName}&playerName=${username}`, 
-        );
-        return response;
-    }
-
-    async getRoom(roomName: string): Promise<GetRoomResponse> {
-        const response = await this.authorizedFetch<GetRoomResponse>(
-            'GET', 
-            `rooms?roomName=${roomName}`, 
-        );
-        return response;
-    }
+  async authorizedFetch<T>(
+    method: Method,
+    path: string,
+    body?: unknown
+  ): Promise<T> {
+    return this.fetch<T>(
+      method,
+      path,
+      body,
+      { 'Authorization': `Bearer ${UserStore.userToken}` },
+    );
+  }
 }
 
 export const api = new API();

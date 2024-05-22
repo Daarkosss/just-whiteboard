@@ -1,0 +1,16 @@
+
+.properties-panel {
+    position: absolute;
+    top: 70px;
+    right: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    z-index: 2;
+    width: 260px;
+    height: 600px;
+    background-color: #a9ceff;
+    padding: 20px;
+    overflow-y: auto;
+  }
