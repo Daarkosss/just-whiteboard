@@ -3,4 +3,13 @@
 $primary-font: 'Roboto', sans-serif;
 $primary-color: #ffffff;
 $secondary-color: #00e1ff;
-$home-background-gradient: linear-gradient(to right, #00d9ff, #006eff);
+
+$light-blue: #00d9ff;
+$medium-blue: #00a6ff;
+$dark-blue: #006eff;
+
+$header-gradient: linear-gradient(to right, $light-blue, $dark-blue);
+
+$light-background-color: #ffffff;
+$dark-background-color: #e4e4e4;
+$home-background-gradient: linear-gradient(to right, $light-background-color, $dark-background-color);

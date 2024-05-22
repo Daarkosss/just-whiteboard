@@ -6,7 +6,7 @@ import './scss/main.scss';
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/whiteboard/:id" element={<Whiteboard />} />

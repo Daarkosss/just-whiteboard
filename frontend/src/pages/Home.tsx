@@ -44,7 +44,7 @@ const Home: React.FC = () => {
       </div>
       <div className="home-container">
         <div className="add-button-container">
-          <Button className="add-button" variant="light" onClick={handleOpenModal}>
+          <Button className="add-button" variant="primary" onClick={handleOpenModal}>
             Add New Whiteboard
           </Button>
         </div>
