@@ -33,6 +33,7 @@ const WhiteboardCanvas: React.FC = observer(() => {
     }
   }, []);
 
+
   return <Canvas ref={canvasRef} style={{ zIndex: 1 }} />;
 });
 

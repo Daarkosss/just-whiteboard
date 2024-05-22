@@ -11,8 +11,8 @@ const Header: React.FC = () => {
 
   return (
     <div className="header">
-      <div>Whiteboard</div>
-      <Button variant="danger" onClick={handleLeave}>Leave</Button>
+      <h1 className='title' >Whiteboard</h1>
+      <Button className="leave-button" variant="danger" onClick={handleLeave}>Leave</Button>
     </div>
   );
 };

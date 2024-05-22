@@ -1,0 +1,39 @@
+.whiteboard-thumbnail {
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  margin: 10px;
+}
+
+.whiteboard-thumbnail:hover {
+  transform: scale(1.01);
+}
+
+.whiteboard-title {
+  flex-grow: 1;
+}
+
+.edit-icon {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.edit-icon:hover {
+  color: #007bff;
+}
+
+.whiteboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: aliceblue;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.home-container {
+  padding: 20px;
+}
+
+.modal {
+  color:#007bff
+}
