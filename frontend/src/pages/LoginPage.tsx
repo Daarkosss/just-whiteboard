@@ -1,6 +1,6 @@
 // src/pages/LandingPage.tsx
 import React from 'react';
-import LoginButton from '../components/LoginButton';
+import LoginPanel from '../components/LoginPanel';
 
 const LoginPage: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
         </h1>
       </div>
       <div className="login-container">
-        <LoginButton />
+        <LoginPanel />
       </div>
     </div>
   );

@@ -20,3 +20,18 @@
 .form-group {
   margin-top: 15px;
 }
+
+.login-panel {
+  width: 400px;
+  height: 300px;
+  background: $header-gradient;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  border-radius: 20px;
+  box-shadow: 6px 8px 5px rgba(0, 0, 0, 0.24);
+  font-size: 42px;
+  border: 1px solid $primary-color;
+}

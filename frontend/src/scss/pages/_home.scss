@@ -11,11 +11,10 @@
     background-color: $medium-blue;
     padding: 40px;
     border-radius: 10px;
-    border-style: 10px solid $dark-blue;
+    border: 2px solid $primary-color;
 
     .whiteboard-thumbnail {
       cursor: pointer;
-      transition: box-shadow 0.3s ease;
     }
     
     .whiteboard-thumbnail:hover {
