@@ -18,7 +18,7 @@ const PropertiesPanel: React.FC = observer(() => {
         <div className="properties-panel">
           {canvasStore.selectedObject.type === 'textbox' ? (
             <Form>
-              <Form.Group controlId="formFontSize">
+              <Form.Group controlId="formFontSize" className='form-group'>
                 <Form.Label>Font Size</Form.Label>
                 <input
                   type="number"
@@ -27,7 +27,7 @@ const PropertiesPanel: React.FC = observer(() => {
                   className="form-control"
                 />
               </Form.Group>
-              <Form.Group controlId="formFontFamily">
+              <Form.Group controlId="formFontFamily" className='form-group'>
                 <Form.Label>Font Family</Form.Label>
                 <select
                   value={canvasStore.fontFamily}
@@ -42,7 +42,7 @@ const PropertiesPanel: React.FC = observer(() => {
             </Form>
           ) : (
             <Form>
-              <Form.Group controlId="formObjectWidth">
+              <Form.Group controlId="formObjectWidth" className='form-group'>
                 <Form.Label>Width</Form.Label>
                 <input
                   type="number"
@@ -51,7 +51,7 @@ const PropertiesPanel: React.FC = observer(() => {
                   className="form-control"
                 />
               </Form.Group>
-              <Form.Group controlId="formObjectHeight">
+              <Form.Group controlId="formObjectHeight" className='form-group'>
                 <Form.Label>Height</Form.Label>
                 <input
                   type="number"

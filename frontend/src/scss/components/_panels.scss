@@ -1,18 +1,22 @@
 
 .properties-panel {
-    position: absolute;
-    top: 100px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 30px;
-    z-index: 2;
-    width: 260px;
-    background-color: $dark-blue;
-    padding: 20px;
-    overflow-y: auto;
-    border-radius: 20px;
-    box-shadow: 6px 8px 5px rgba(0, 0, 0, 0.24);
-  }
+  position: absolute;
+  top: 100px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 30px;
+  z-index: 2;
+  width: 260px;
+  background-color: $dark-blue;
+  padding: 0px 20px 20px 20px;
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 6px 8px 5px rgba(0, 0, 0, 0.24);
+}
+
+.form-group {
+  margin-top: 15px;
+}
