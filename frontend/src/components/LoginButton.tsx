@@ -16,7 +16,7 @@ const LoginButton: React.FC = () => {
   };
 
   return (
-    <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+    <GoogleLogin theme="filled_blue" shape="pill" width={300} onSuccess={responseMessage} onError={errorMessage} />
   );
 };
 
