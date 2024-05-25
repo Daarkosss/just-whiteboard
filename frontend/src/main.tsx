@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
+import "./i18n/i18n";
 
 const container = document.getElementById('root')!;
 const root = ReactDOM.createRoot(container);

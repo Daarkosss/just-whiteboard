@@ -4,6 +4,7 @@ import userStore from '../store/UserStore';
 import WhiteboardThumbnail from '../components/WhiteboardThumbnail';
 import AddWhiteboardModal from '../components/modals/AddWhiteboardModal';
 import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const initialWhiteboards = [
   { id: '1', title: 'Whiteboard 1' },
@@ -13,9 +14,10 @@ const initialWhiteboards = [
 ];
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [whiteboards, setWhiteboards] = useState(initialWhiteboards);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
   const handleUpdateTitle = (id: string, newTitle: string) => {
     setWhiteboards((prevWhiteboards) =>
@@ -47,14 +49,14 @@ const Home: React.FC = () => {
     <div>
       <div className="sticky-header">
         <h1 className='title'>
-          Available Whiteboards
+          {t('availableWhiteboards')}
         </h1>
         <Button className="leave-button" variant="danger" onClick={handleLogout}>Logout</Button>
       </div>
       <div className="home-container">
         <div className="add-button-container">
           <Button className="add-button" variant="primary" onClick={handleOpenModal}>
-            Add New Whiteboard
+            {t('addWhiteboard')}
           </Button>
         </div>
         <div className="whiteboard-grid">

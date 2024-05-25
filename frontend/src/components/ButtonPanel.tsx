@@ -7,8 +7,11 @@ import { BsFillTriangleFill } from 'react-icons/bs';
 import { RiFontSize2 } from 'react-icons/ri';
 import canvasStore from '../store/CanvasStore';
 import { fabric } from 'fabric';
+import { useTranslation } from 'react-i18next';
 
 const ButtonPanel: React.FC = observer(() => {
+  const { t } = useTranslation();
+
   const addRectangle = () => {
     const canvas = canvasStore.canvas;
     if (canvas) {
@@ -72,16 +75,16 @@ const ButtonPanel: React.FC = observer(() => {
   return (
     <ButtonGroup vertical className="buttons-container">
       <Button className="button" onClick={addRectangle}>
-        <FaSquare /> Add Rectangle
+        <FaSquare /> {t('addRectangle')}
       </Button>
       <Button className="button" onClick={addTriangle}>
-        <BsFillTriangleFill /> Add Triangle
+        <BsFillTriangleFill /> {t('addTriangle')}
       </Button>
       <Button className="button" onClick={addCircle}>
-        <FaCircle /> Add Circle
+        <FaCircle /> {t('addCircle')}
       </Button>
       <Button className="button" onClick={addText}>
-        <RiFontSize2 /> Add Text
+        <RiFontSize2 /> {t('addText')}
       </Button>
     </ButtonGroup>
   );

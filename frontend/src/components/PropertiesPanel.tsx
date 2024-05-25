@@ -4,8 +4,10 @@ import { observer } from 'mobx-react-lite';
 import { Form, Button } from 'react-bootstrap';
 import { SketchPicker } from 'react-color';
 import canvasStore from '../store/CanvasStore';
+import { useTranslation } from 'react-i18next';
 
 const PropertiesPanel: React.FC = observer(() => {
+  const { t } = useTranslation();
 
   const handleColorChange = (colorResult: { hex: string }) => {
     console.log(canvasStore.selectedObject);
@@ -19,7 +21,7 @@ const PropertiesPanel: React.FC = observer(() => {
           {canvasStore.selectedObject.type === 'textbox' ? (
             <Form>
               <Form.Group controlId="formFontSize" className='form-group'>
-                <Form.Label>Font Size</Form.Label>
+                <Form.Label>{t('fontSize')}</Form.Label>
                 <input
                   type="number"
                   value={canvasStore.fontSize}
@@ -28,7 +30,7 @@ const PropertiesPanel: React.FC = observer(() => {
                 />
               </Form.Group>
               <Form.Group controlId="formFontFamily" className='form-group'>
-                <Form.Label>Font Family</Form.Label>
+                <Form.Label>{t('fontFamily')}</Form.Label>
                 <select
                   value={canvasStore.fontFamily}
                   onChange={(e) => canvasStore.setFontFamily(e.target.value)}
@@ -43,7 +45,7 @@ const PropertiesPanel: React.FC = observer(() => {
           ) : (
             <Form>
               <Form.Group controlId="formObjectWidth" className='form-group'>
-                <Form.Label>Width</Form.Label>
+                <Form.Label>{t('width')}</Form.Label>
                 <input
                   type="number"
                   value={canvasStore.width}
@@ -52,7 +54,7 @@ const PropertiesPanel: React.FC = observer(() => {
                 />
               </Form.Group>
               <Form.Group controlId="formObjectHeight" className='form-group'>
-                <Form.Label>Height</Form.Label>
+                <Form.Label>{t('height')}</Form.Label>
                 <input
                   type="number"
                   value={canvasStore.height}
@@ -63,11 +65,11 @@ const PropertiesPanel: React.FC = observer(() => {
             </Form>
           )}
           <Form.Group controlId="formObjectColor">
-            <Form.Label>Color</Form.Label>
+            <Form.Label>{t('color')}</Form.Label>
             <SketchPicker color={canvasStore.color} onChange={handleColorChange} />
           </Form.Group>
           <Button variant="danger" onClick={() => canvasStore.removeSelectedObject()}>
-            Remove Object
+            {t('removeObject')}
           </Button>
         </div>
       ) : (

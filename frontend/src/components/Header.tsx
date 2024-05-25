@@ -1,8 +1,10 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLeave = () => {
@@ -11,8 +13,8 @@ const Header: React.FC = () => {
 
   return (
     <div className="sticky-header-full-width">
-      <h1 className='title'>Whiteboard</h1>
-      <Button className="leave-button" variant="danger" onClick={handleLeave}>Leave</Button>
+      <h1 className='title'>{t('whiteboard')}</h1>
+      <Button className="leave-button" variant="danger" onClick={handleLeave}>{t('leave')}</Button>
     </div>
   );
 };

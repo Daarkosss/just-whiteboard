@@ -2,8 +2,10 @@ import React from 'react';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import userStore from '../store/UserStore';
+import { useTranslation } from 'react-i18next';
 
 const LoginPanel: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const responseMessage = (response: CredentialResponse) => {
@@ -17,7 +19,7 @@ const LoginPanel: React.FC = () => {
 
   return (
     <div className="login-panel">
-      <div>Login</div>
+      <div>{t('login')}</div>
       <GoogleLogin 
         shape="pill" 
         width={300} 
