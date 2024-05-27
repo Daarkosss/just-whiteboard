@@ -12,12 +12,22 @@
     color: white;
   }
 
-  .avatar {
+  .avatar-container {
     position: absolute;
-    top: 20px;
-    left: 30px;
-    width: 50px;
-    border-radius: 50%;
+    top: 10px;
+    left: 20px;
+    gap: 5px;
+    font-size: 18px;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .avatar {
+      width: 40px;
+      border-radius: 50%;
+    }
   }
 }
 

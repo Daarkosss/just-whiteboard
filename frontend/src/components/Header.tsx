@@ -28,8 +28,9 @@ export const HomeHeader: React.FC = () => {
 
   return (
     <div className="sticky-header">
-      <div>
+      <div className="avatar-container">
         {<img src={userStore.user?.avatar} alt="avatar" className="avatar" />}
+        <div>{userStore.user?.name}</div>
       </div>
       <h1 className='title'>{t('availableWhiteboards')}</h1>
       <Button className="leave-button" variant="danger" onClick={handleLogout}>{t('logout')}</Button>
@@ -47,8 +48,9 @@ export const WhiteboardHeader: React.FC = () => {
 
   return (
     <div className="sticky-header-full-width">
-      <div>
+      <div className="avatar-container">
         {<img src={userStore.user?.avatar} alt="avatar" className="avatar" />}
+        <div>{userStore.user?.name}</div>
       </div>
       <h1 className='title'>{t('whiteboard')}</h1>
       <Button className="leave-button" variant="danger" onClick={handleLeave}>{t('leave')}</Button>
