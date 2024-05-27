@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '../components/Header';
+import { WhiteboardHeader } from '../components/Header';
 import ButtonPanel from '../components/ButtonPanel';
 import PropertiesPanel from '../components/PropertiesPanel';
 import WhiteboardCanvas from '../components/WhiteboardCanvas';
@@ -9,7 +9,7 @@ const Whiteboard: React.FC = () => {
     <div>
       <WhiteboardCanvas />
       <div className="canvas-container">
-        <Header />
+        <WhiteboardHeader />
         <ButtonPanel />
         <PropertiesPanel />
       </div>

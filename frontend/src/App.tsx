@@ -7,7 +7,7 @@ import userStore from './store/UserStore';
 import './scss/main.scss';
 
 const PrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
-  return userStore.isAuthenticated ? element : <Navigate to="/login" />;
+  return userStore.user ? element : <Navigate to="/login" />;
 };
 
 const App: React.FC = () => {

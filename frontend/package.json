@@ -15,6 +15,7 @@
     "bootstrap": "^5.3.3",
     "fabric": "^5.3.0",
     "i18next": "^23.11.5",
+    "jwt-decode": "^4.0.0",
     "l": "^0.6.0",
     "mobx": "^6.12.3",
     "mobx-react-lite": "^4.0.7",
