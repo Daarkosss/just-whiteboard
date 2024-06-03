@@ -5,7 +5,7 @@ import canvasStore from '../store/CanvasStore';
 
 const WhiteboardCanvas: React.FC = observer(() => {
   const canvasRef = useRef<CanvasInstance>(null);
-
+  
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
     if (canvas) {

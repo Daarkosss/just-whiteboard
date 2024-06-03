@@ -43,7 +43,7 @@ class API {
       method,
       path,
       body,
-      { 'Authorization': `Bearer ${userStore.userToken}` },
+      { 'Authorization': `Bearer ${userStore.user!.userToken}` },
     );
   }
 }

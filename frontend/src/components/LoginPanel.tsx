@@ -43,6 +43,7 @@ const LoginPanel: React.FC = () => {
     <div className="login-panel">
       <div>{t('login')}</div>
       <GoogleLogin 
+        
         shape="pill" 
         width={300} 
         locale="en" 

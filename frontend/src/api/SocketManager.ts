@@ -13,7 +13,7 @@ class SocketManager {
     this.socket = io(SOCKET_BASE_URL, {
       reconnection: false,
       query: {
-        username: UserStore.username,
+        username: UserStore.user!.name,
       },
     });
 
@@ -34,7 +34,7 @@ class SocketManager {
     console.log('sending typing', isTyping);
     if (this.socket) {
       this.socket.emit("typing", {
-        username: UserStore.username,
+        username: UserStore.user!.name,
         isTyping: isTyping,
       });
     }
@@ -45,7 +45,7 @@ class SocketManager {
     if (this.socket) {
       this.socket.emit("send_message", {
         content: payload.content,
-        username: UserStore.username,
+        username: UserStore.user!.name,
         messageType: "CLIENT",
       });
     }

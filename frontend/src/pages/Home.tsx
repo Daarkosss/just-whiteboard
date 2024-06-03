@@ -4,6 +4,7 @@ import AddWhiteboardModal from '../components/modals/AddWhiteboardModal';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { HomeHeader } from '../components/Header';
+import UserStore from '../store/UserStore';
 
 const initialWhiteboards = [
   { id: '1', title: 'Whiteboard 1' },
@@ -38,9 +39,21 @@ const Home: React.FC = () => {
     setShowModal(false);
   };
 
+
+  const Login = () => {
+    fetch('https://localhost:3000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ accessToken: UserStore.user?.token, email: UserStore.user?.email })
+    })
+  }
+
   return (
     <div>
       <HomeHeader />
+      <button onClick={Login}>Login</button>
       <div className="home-container">
         <div className="add-button-container">
           <Button className="add-button" variant="primary" onClick={handleOpenModal}>
