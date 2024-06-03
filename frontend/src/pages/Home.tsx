@@ -45,11 +45,22 @@ const Home: React.FC = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${UserStore.user?.userToken}`  // Dodaj token JWT tutaj
       },
-      body: JSON.stringify({ accessToken: UserStore.user?.userToken, email: UserStore.user?.email })
+      body: JSON.stringify({
+        email: UserStore.user?.email
+      }),
     })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   }
-
+  
+  
   return (
     <div>
       <HomeHeader />
