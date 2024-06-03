@@ -46,7 +46,7 @@ const Home: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ accessToken: UserStore.user?.token, email: UserStore.user?.email })
+      body: JSON.stringify({ accessToken: UserStore.user?.userToken, email: UserStore.user?.email })
     })
   }
 

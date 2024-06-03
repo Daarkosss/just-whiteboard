@@ -24,7 +24,7 @@ const LoginPanel: React.FC = () => {
         name: decodedToken.name,
         email: decodedToken.email,
         avatar: decodedToken.picture,
-        token: response.credential,
+        userToken: response.credential,
       };
 
       userStore.setUser(user);
