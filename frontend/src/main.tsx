@@ -9,11 +9,9 @@ import "./i18n/i18n";
 const container = document.getElementById('root')!;
 const root = ReactDOM.createRoot(container);
 
-const clientId = '1062105740354-3ilga9bncos799lefe0a1ufsik9imm2c.apps.googleusercontent.com';
-
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
