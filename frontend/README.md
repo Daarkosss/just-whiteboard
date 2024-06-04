@@ -1,6 +1,6 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with some ESLint rules.  
+Project created from template that provided a minimal setup to get React working in Vite with some ESLint rules.  
 It uses pnpm as a package manager.
 
 Project created with command:
