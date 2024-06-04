@@ -1,26 +1,15 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
-var app = require('../app');
+var app = require('../app.js');
 var debug = require('debug')('just-whiteboard:server');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
-
-/**
- * Get port from environment and store in Express.
- */
+const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
+// https options for secure connection
 var httpsOptions = {
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem')
@@ -28,17 +17,17 @@ var httpsOptions = {
 
 var server = https.createServer(httpsOptions,app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
+  console.log("Connected to database!");
+  server.listen(port, () => {
+    console.log("Server is running on port " + port);
+  });
+})
 
-server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+// helper functions
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -56,9 +45,6 @@ function normalizePort(val) {
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -84,9 +70,6 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
   var addr = server.address();
