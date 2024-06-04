@@ -13,6 +13,7 @@ const confirmToken = async (req, res) => {
           params: { id_token: accessToken }
         });
         const tokenData = response.data;
+        console.log(tokenData);
         if (tokenData.aud !== process.env.GOOGLE_CLIENT_ID || tokenData.exp < Math.floor(Date.now() / 1000)) {
           return res.status(401).json({ message: 'Invalid token' });
         }
