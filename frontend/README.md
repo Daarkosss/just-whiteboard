@@ -10,7 +10,7 @@ pnpm create vite my-react-app --template react-ts
 
 ## How to run it?
 
-1. Create file `.env` with neccesary environment variales:
+1. Create file `.env` with neccesary environment variables:
 ```
 VITE_GOOGLE_CLIENT_ID="YOUR_SECRET_GOOGLE_CLIENT_ID"
 ```
