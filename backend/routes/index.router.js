@@ -21,8 +21,6 @@ app.post('/login', async (req, res) => {
       return res;
     }
     const user = await findOrCreateUser(userData);
-    console.log(userData);
-    console.log(user);
     
     res.status(200).json(user);
   } catch (error) {

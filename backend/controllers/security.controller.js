@@ -8,6 +8,7 @@ const confirmToken = async (req, res) => {
        res.status(401).json({ message: 'No token provided' });
        return null;
     }
+    // console.log(accessToken);
 
     try {
         // Logika związana z weryfikacją tokena z Google
@@ -20,14 +21,14 @@ const confirmToken = async (req, res) => {
             res.status(401).send({
                 message: 'Token has expired. Log in again.'
             });
-            return null;
+            return res;
         }
 
         const tokenData = response.data;
         // Checking if the token is expired or not the expected audience
         if (tokenData.aud !== process.env.GOOGLE_CLIENT_ID || tokenData.exp < Math.floor(Date.now() / 1000)) {
           res.status(401).json({ message: 'Invalid token' });
-          return null;
+          return res;
         }
 
         res.status(200);
@@ -39,13 +40,13 @@ const confirmToken = async (req, res) => {
           const status = error.response.status || 500;
           const message = error.response.data.error_description || 'Error communicating with Google API';
           res.status(status).json({ message });
-          return null;
+          return res;
         } else if (error.request) {
           res.status(500).json({ message: 'No response from Google API' });
-          return null;
+          return res;
         } else {
           res.status(500).json({ message: error.message });
-          return null;
+          return res;
         }
       }
 };
