@@ -4,12 +4,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require("cors");
+require("dotenv").config();
 
-var indexRouter = require('./routes/index.router.js');
+const indexRouter = require('./routes/index.router.js');
 const userRouter = require('./routes/user.router.js');
 const boardRouter = require('./routes/board.router.js');
 const privilegeRouter = require('./routes/privilege.router.js');
 const objectRouter = require('./routes/object.router.js');
+const { confirmToken } = require("./middleware/jwt.middleware.js");
 
 var app = express();
 
@@ -21,6 +24,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.use(confirmToken);
 
 // routing
 app.use('/', indexRouter);

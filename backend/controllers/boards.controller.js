@@ -2,6 +2,8 @@ const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
 const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
 const {getObjectsByBoardId, deleteObjectsByBoardId} = require('./objects.controller.js');
+const { createCanvas, loadImage } = require('canvas');
+const fabric = require('fabric').fabric;
 
 const getBoards = async (req, res) => {
   try {
@@ -23,6 +25,10 @@ const getBoard = async (req, res) => {
     if (!board) {
       return res.status(404).json({ message: "Board not found" });
     }
+    const dataUrl = await generateDataUrl(board)
+    board.dataUrl = dataUrl;
+    // board.dataUrl = "śmieszne";
+    board.save();
     res.status(200).json(board);
   } catch (error) {
     console.log(error);
@@ -167,6 +173,27 @@ const deleteOwnerBoards = async (userID) => {
     throw error;
   }
 };
+
+const generateDataUrl = async (board) => {
+  const canvas = fabric.createCanvasForNode(400, 250);
+  try {
+    const objects = await getObjectsByBoardId(board._id);
+    if (objects.length === 0) {
+      return null;
+    }
+
+    for (const object of objects) {
+      const fabricObject = new fabric[object.type](object);
+      canvas.add(fabricObject);
+    }
+    canvas.renderAll();
+    const dataUrl = canvas.toDataURL();
+
+    return dataUrl;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   getBoards,
