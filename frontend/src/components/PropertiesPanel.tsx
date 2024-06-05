@@ -3,10 +3,11 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Form, Button } from 'react-bootstrap';
 import { SketchPicker } from 'react-color';
-import canvasStore from '../store/CanvasStore';
 import { useTranslation } from 'react-i18next';
+import { useStore } from '../store/StoreProvider';
 
 const PropertiesPanel: React.FC = observer(() => {
+  const { canvasStore } = useStore();
   const { t } = useTranslation();
 
   const handleColorChange = (colorResult: { hex: string }) => {

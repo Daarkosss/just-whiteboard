@@ -1,8 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { SOCKET_BASE_URL } from "./api";
-import UserStore from "../store/UserStore";
+import { useStore } from '../store/StoreProvider';
 
 class SocketManager {
+  rootStore = useStore();
   private socket: Socket | null = null;
 
   constructor() {
@@ -13,7 +14,7 @@ class SocketManager {
     this.socket = io(SOCKET_BASE_URL, {
       reconnection: false,
       query: {
-        username: UserStore.user!.name,
+        username: this.rootStore.userStore.user!.name,
       },
     });
 
@@ -34,7 +35,7 @@ class SocketManager {
     console.log('sending typing', isTyping);
     if (this.socket) {
       this.socket.emit("typing", {
-        username: UserStore.user!.name,
+        username: this.rootStore.userStore.user!.name,
         isTyping: isTyping,
       });
     }
@@ -45,7 +46,7 @@ class SocketManager {
     if (this.socket) {
       this.socket.emit("send_message", {
         content: payload.content,
-        username: UserStore.user!.name,
+        username: this.rootStore.userStore.user!.name,
         messageType: "CLIENT",
       });
     }

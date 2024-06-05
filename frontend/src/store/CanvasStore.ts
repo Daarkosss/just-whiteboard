@@ -2,8 +2,10 @@
 import { makeAutoObservable } from 'mobx';
 import { fabric } from 'fabric';
 import { Handler } from 'react-design-editor';
+import RootStore from './RootStore';
 
 class CanvasStore {
+  rootStore: RootStore;
   canvas: fabric.Canvas | null = null;
   handler: Handler | null = null;
   selectedObject: fabric.Object | null = null;
@@ -13,8 +15,9 @@ class CanvasStore {
   width: number | '' = '';
   height: number | '' = '';
 
-  constructor() {
+  constructor(rootStore: RootStore) {
     makeAutoObservable(this);
+    this.rootStore = rootStore;
   }
 
   setCanvas(canvas: fabric.Canvas) {
@@ -115,4 +118,4 @@ class CanvasStore {
   }
 }
 
-export default new CanvasStore();
+export default CanvasStore;

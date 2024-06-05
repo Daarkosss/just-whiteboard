@@ -26,7 +26,6 @@ const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id, title, on
       hoverCursor: 'default',
     });
 
-    // Dodawanie przykładowych elementów
     const rect = new fabric.Rect({
       width: 50,
       height: 50,

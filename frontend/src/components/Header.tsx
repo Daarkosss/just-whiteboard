@@ -2,8 +2,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import userStore from '../store/UserStore';
-
+import { useStore } from '../store/StoreProvider';
 
 export const LoginHeader: React.FC = () => {
   const { t } = useTranslation();
@@ -18,6 +17,7 @@ export const LoginHeader: React.FC = () => {
 };
 
 export const HomeHeader: React.FC = () => {
+  const { userStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -39,6 +39,7 @@ export const HomeHeader: React.FC = () => {
 };
 
 export const WhiteboardHeader: React.FC = () => {
+  const { userStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 

@@ -1,4 +1,4 @@
-import userStore from "../store/UserStore";
+import { useStore } from '../store/StoreProvider';
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
 const backendPort = import.meta.env.VITE_BACKEND_PORT || '8080';
@@ -7,7 +7,22 @@ export const PATH_PREFIX = `http://${backendHost}:${backendPort}/`;
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+export interface Board {
+  _id: string;
+  owner: User;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 class API {
+  rootStore = useStore();
 
   async fetch<T>(
     method: Method,
@@ -43,9 +58,39 @@ class API {
       method,
       path,
       body,
-      { 'Authorization': `Bearer ${userStore.user!.userToken}` },
+      { 'Authorization': `Bearer ${this.rootStore.userStore.user!.userToken}` },
     );
   }
+
+// Get all boards for the current user
+async getBoards(): Promise<Board[]> {
+  return this.authorizedFetch<Board[]>('GET', 'boards/all');
+}
+
+// Get a specific board by ID
+async getBoard(id: string): Promise<Board> {
+  return this.authorizedFetch<Board>('GET', `boards?id=${id}`);
+}
+
+// Create a new board
+async createBoard(name: string): Promise<Board> {
+  return this.authorizedFetch<Board>('POST', 'boards', { name });
+}
+
+// Update a board by ID
+async updateBoard(id: string, name: string): Promise<Board> {
+  return this.authorizedFetch<Board>('PUT', `boards?id=${id}`, { name });
+}
+
+// Delete a board by ID
+async deleteBoard(id: string): Promise<void> {
+  return this.authorizedFetch<void>('DELETE', `boards?id=${id}`);
+}
+
+// Get all objects for a specific board by ID
+async getBoardsObjects(id: string): Promise<any[]> {
+  return this.authorizedFetch<any[]>('GET', `boards/objects?id=${id}`);
+}
 }
 
 export const api = new API();

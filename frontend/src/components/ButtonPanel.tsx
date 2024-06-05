@@ -5,11 +5,12 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import { FaSquare, FaCircle } from 'react-icons/fa';
 import { BsFillTriangleFill } from 'react-icons/bs';
 import { RiFontSize2 } from 'react-icons/ri';
-import canvasStore from '../store/CanvasStore';
 import { fabric } from 'fabric';
 import { useTranslation } from 'react-i18next';
+import { useStore } from '../store/StoreProvider';
 
 const ButtonPanel: React.FC = observer(() => {
+  const { canvasStore } = useStore();
   const { t } = useTranslation();
 
   const addRectangle = () => {

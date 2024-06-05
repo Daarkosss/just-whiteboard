@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Canvas, CanvasInstance } from 'react-design-editor';
-import canvasStore from '../store/CanvasStore';
+import { useStore } from '../store/StoreProvider';
 
 const WhiteboardCanvas: React.FC = observer(() => {
   const canvasRef = useRef<CanvasInstance>(null);
+  const { canvasStore } = useStore();
   
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
@@ -31,7 +32,7 @@ const WhiteboardCanvas: React.FC = observer(() => {
         });
       };
     }
-  }, []);
+  }, [canvasStore]);
 
 
   return <Canvas ref={canvasRef} style={{ zIndex: 1 }} />;

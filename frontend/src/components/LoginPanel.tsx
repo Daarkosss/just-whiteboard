@@ -2,8 +2,8 @@ import React from 'react';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import userStore from '../store/UserStore';
 import { useTranslation } from 'react-i18next';
+import { useStore } from '../store/StoreProvider';
 
 interface DecodedToken {
   sub: string;
@@ -13,6 +13,7 @@ interface DecodedToken {
 }
 
 const LoginPanel: React.FC = () => {
+  const { userStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
