@@ -15,5 +15,5 @@ const PrivilegesSchema = mongoose.Schema({
   timestamps: true  // opcjonalnie, jeśli chcesz śledzić daty utworzenia i modyfikacji
 });
 
-const Privileges = mongoose.model("Privileges", PrivilegesSchema);
-module.exports = Privileges;
+const Privilege = mongoose.model("Privilege", PrivilegesSchema);
+module.exports = Privilege;
