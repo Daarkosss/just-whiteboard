@@ -5,7 +5,8 @@ const confirmToken = async (req, res) => {
     const accessToken = authHeader && authHeader.split(' ')[1];
   
     if (!accessToken) {
-      return res.status(401).json({ message: 'No token provided' });
+       res.status(401).json({ message: 'No token provided' });
+       return null;
     }
 
     try {
@@ -16,30 +17,35 @@ const confirmToken = async (req, res) => {
 
         // Check the actual data returned from Google
         if (response.data.error_description === 'Invalid Value') {
-            return res.status(401).send({
+            res.status(401).send({
                 message: 'Token has expired. Log in again.'
             });
+            return null;
         }
 
         const tokenData = response.data;
-        console.log(tokenData);
         // Checking if the token is expired or not the expected audience
         if (tokenData.aud !== process.env.GOOGLE_CLIENT_ID || tokenData.exp < Math.floor(Date.now() / 1000)) {
-          return res.status(401).json({ message: 'Invalid token' });
+          res.status(401).json({ message: 'Invalid token' });
+          return null;
         }
 
         res.status(200);
+        return tokenData;
       } catch (error) {
         // console.error(error);
 
         if (error.response) {
           const status = error.response.status || 500;
           const message = error.response.data.error_description || 'Error communicating with Google API';
-          return res.status(status).json({ message });
+          res.status(status).json({ message });
+          return null;
         } else if (error.request) {
-          return res.status(500).json({ message: 'No response from Google API' });
+          res.status(500).json({ message: 'No response from Google API' });
+          return null;
         } else {
-          return res.status(500).json({ message: error.message });
+          res.status(500).json({ message: error.message });
+          return null;
         }
       }
 };

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ObjectSchema = mongoose.Schema({
-  boardboardID: {
+  boardId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Board',
     required: true

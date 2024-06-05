@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
-const Board = require("../models/board.model"); // Zaimportuj model Board, jeśli chcesz obsługiwać automatyczne usuwanie
-
+const {getUserBoardsByPrivileges } = require('./privileges.controller'); 
+const {deleteOwnerBoards} = require('./boards.controller.js');
 const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
@@ -57,6 +57,31 @@ const createUser = async (req, res) => {
   }
 };
 
+const findOrCreateUser = async (userData) => {
+  try {
+    const { sub: ssoID, name, email, picture } = userData;
+
+    // Sprawdzenie czy użytkownik już istnieje
+    let user = await User.findOne({ ssoID });
+
+    if (!user) {
+      // Jeśli użytkownik nie istnieje, stwórz nowego
+      user = new User({
+        ssoID,
+        name,
+        email,
+        picture,
+        mouseLeft: 0,  // Domyślne wartości
+        mouseTop: 0
+      });
+      await user.save();
+    }
+    
+    return user;
+  } catch (error) {
+    throw error;  // Rzucenie błędu do obsługi w funkcji wywołującej
+  }
+};
 
 const updateUser = async (req, res) => {
   try {
@@ -90,13 +115,38 @@ const deleteUser = async (req, res) => {
     }
 
     //TODO: Usuń wszystkie tablice przypisane do użytkownika
-    
+    await deleteOwnerBoards(id);
 
     res.status(200).json({ message: "User and associated boards deleted successfully" });
   } catch (error) {
     console.log(error);
     if(error.name === "CastError") {
         return res.status(400).json({ message: "Invlaid User ID" });
+    }
+    res.status(500).json({ message: String(error) });
+  }
+};
+
+const getUsersBoards = async (req, res) => {
+  try {
+    const { userID } = req.query; // Pobieranie userID z query
+
+    if (!userID) {
+      return res.status(400).json({ message: "User ID must be provided" });
+    }
+
+    // Znajdowanie tablic, do których użytkownik ma dostęp poprzez uprawnienia
+    const boards = await getUserBoardsByPrivileges(userID);
+
+    if (boards.length === 0) {
+      return res.status(404).json({ message: "No boards found for this user" });
+    }
+
+    res.status(200).json(boards);
+  } catch (error) {
+    console.log(error);
+    if(error.name === "CastError") {
+        return res.status(400).json({ message: "Invalid User ID" });
     }
     res.status(500).json({ message: String(error) });
   }
@@ -109,4 +159,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserBySSOID,
+  findOrCreateUser,
+  getUsersBoards
 };

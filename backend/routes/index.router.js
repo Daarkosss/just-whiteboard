@@ -1,7 +1,7 @@
-var express = require("express");
-var cors = require("cors");
-var axios = require("axios");
+const express = require("express");
+const cors = require("cors");
 const { confirmToken } = require("../controllers/security.controller.js");
+const { findOrCreateUser } = require('../controllers/users.controller');
 
 const app = express();
 
@@ -12,15 +12,22 @@ app.use(cors());
 app.post('/login', async (req, res) => {
   try {
     // Logika związana z weryfikacją tokena
-    await confirmToken(req, res);
+    const userData = await confirmToken(req, res);
+    if (!userData) {
+      return res;
+    }
 
     if (res.statusCode !== 200) {
       return res;
     }
-
-    // Kontynuuj z logiką biznesową
-    res.status(200).json({ message: 'User logged in successfully' });
+    const user = await findOrCreateUser(userData);
+    console.log(userData);
+    console.log(user);
+    
+    res.status(200).json(user);
   } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: String(error) });
   }
 });
 // Logout route

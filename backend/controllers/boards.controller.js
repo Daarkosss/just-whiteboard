@@ -1,7 +1,7 @@
 const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
 const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
-
+const {getObjectsByBoardId, deleteObjectsByBoardId} = require('./objects.controller.js');
 
 const getBoards = async (req, res) => {
   try {
@@ -9,31 +9,6 @@ const getBoards = async (req, res) => {
     res.status(200).json(boards);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: String(error) });
-  }
-};
-
-const getUsersBoards = async (req, res) => {
-  try {
-    const { userID } = req.query; // Pobieranie userID z query
-
-    if (!userID) {
-      return res.status(400).json({ message: "User ID must be provided" });
-    }
-
-    // Znajdowanie tablic, do których użytkownik ma dostęp poprzez uprawnienia
-    const boards = await getUserBoardsByPrivileges(userID);
-
-    if (boards.length === 0) {
-      return res.status(404).json({ message: "No boards found for this user" });
-    }
-
-    res.status(200).json(boards);
-  } catch (error) {
-    console.log(error);
-    if(error.name === "CastError") {
-        return res.status(400).json({ message: "Invalid User ID" });
-    }
     res.status(500).json({ message: String(error) });
   }
 };
@@ -146,6 +121,7 @@ const deleteBoard = async (req, res) => {
     }
 
     await removePrivilegesByBoardId(id);
+    await deleteObjectsByBoardId(id);
     
     res.status(200).json({ message: "Board deleted successfully" });
   } catch (error) {
@@ -157,11 +133,47 @@ const deleteBoard = async (req, res) => {
   }
 };
 
+const getBoardsObjects = async (req, res) => {
+  try {
+    const { id } = req.query; // Pobieranie boardID z query
+
+    if (!id) {
+      return res.status(400).json({ message: "Board ID must be provided" });
+    }
+
+    const objects = await getObjectsByBoardId(id);
+    if (objects.length === 0) {
+      return res.status(404).json({ message: 'No objects found for this board' });
+    }
+    res.status(200).json(objects);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: String(error) });
+  }
+}
+
+const deleteOwnerBoards = async (userID) => {
+  try {
+    const boards = await Board.find({ owner: userID });
+    if (boards.length === 0) {
+      return;
+    }
+    for (const board of boards) {
+      await removePrivilegesByBoardId(board._id);
+      await deleteObjectsByBoardId(board._id);
+      await Board.findByIdAndDelete(board._id);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getBoards,
-  getUsersBoards,
   getBoard,
   createBoard,
   updateBoard,
   deleteBoard,
+  getBoardsObjects,
+  deleteOwnerBoards
 };

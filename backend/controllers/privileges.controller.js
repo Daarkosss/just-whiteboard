@@ -16,19 +16,10 @@ const addPrivilege = async (boardId, userId) => {
   }
 };
 
-// Funkcja do usuwania uprawnień na podstawie boardId
-const removePrivilegesByBoardId = async (boardId) => {
-  try {
-    const result = await Privilege.deleteMany({ boardId });
-    return result;
-  } catch (error) {
-    console.error("Error removing privileges: ", error);
-    throw error;
-  }
-};
-
 const getUserBoardsByPrivileges = async (userId) => {
   try {
+    console.log(userId);
+    console.log({ userId });
     const privileges = await Privilege.find({ userId }).populate('boardId');
     const boards = privileges.map(priv => priv.boardId);
     return boards;
@@ -100,9 +91,18 @@ const deletePrivilegeForBoardAndUser = async (req, res) => {
     }
     res.status(500).json({ message: String(error) });
   }
-}
+};
 
-//TODO: sprawdź czy tworzenie privilege działa przy dodawaniu nowego boarda i przy REST API
+const removePrivilegesByBoardId = async (boardId) => {
+  try {
+    const result = await Privilege.deleteMany({ boardId });
+    return result;
+  } catch (error) {
+    console.error("Error removing privileges: ", error);
+    throw error;
+  }
+};
+
 
 module.exports = {
   createPrivilege,

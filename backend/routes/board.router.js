@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getBoards, getUsersBoards, getBoard, createBoard, updateBoard, deleteBoard
+  getBoards, getBoard, createBoard, updateBoard, deleteBoard, getBoardsObjects
 } = require('../controllers/boards.controller');
 
 router.get('/all', getBoards);
-router.get('/users-boards', getUsersBoards);
 router.get('/', getBoard);
+router.get('/objects', getBoardsObjects);
 router.post('/', createBoard);
 router.put('/', updateBoard);
 router.delete('/', deleteBoard);
