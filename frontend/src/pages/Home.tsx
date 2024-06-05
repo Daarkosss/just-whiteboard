@@ -41,7 +41,7 @@ const Home: React.FC = () => {
 
 
   const Login = () => {
-    fetch('https://localhost:3000/login', {
+    fetch('https://localhost:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

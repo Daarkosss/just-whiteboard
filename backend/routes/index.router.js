@@ -1,24 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const { confirmToken } = require("../controllers/security.controller.js");
+
+const express = require('express');
+const router = express.Router();
 const { findOrCreateUser } = require('../controllers/users.controller');
 
-const app = express();
-
-require("dotenv").config();
-
-app.use(cors());
-
-app.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     // Logika związana z weryfikacją tokena
-    const userData = await confirmToken(req, res);
+    const userData = req.user;
+    console.log(userData);
     if (!userData) {
-      return res;
-    }
-
-    if (res.statusCode !== 200) {
-      return res;
+      throw new Error('User data not found');
     }
     const user = await findOrCreateUser(userData);
     
@@ -30,4 +21,5 @@ app.post('/login', async (req, res) => {
 });
 // Logout route
 
-module.exports = app;
+module.exports = router;
+

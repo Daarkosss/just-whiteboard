@@ -4,12 +4,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require("cors");
+require("dotenv").config();
 
-var indexRouter = require('./routes/index.router.js');
+const indexRouter = require('./routes/index.router.js');
 const userRouter = require('./routes/user.router.js');
 const boardRouter = require('./routes/board.router.js');
 const privilegeRouter = require('./routes/privilege.router.js');
 const objectRouter = require('./routes/object.router.js');
+const { confirmToken } = require("./middleware/jwt.middleware.js");
 
 var app = express();
 
@@ -23,11 +26,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routing
-app.use('/', indexRouter);
-app.use('/user', userRouter);
-app.use('/board', boardRouter);
-app.use('/privilege', privilegeRouter);
-app.use('/object', objectRouter);
+app.use(cors());
+app.use('/', indexRouter, confirmToken);
+app.use('/user', userRouter, confirmToken);
+app.use('/board', boardRouter, confirmToken);
+app.use('/privilege', privilegeRouter, confirmToken);
+app.use('/object', objectRouter, confirmToken);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
