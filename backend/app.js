@@ -24,14 +24,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.use(confirmToken);
 
 // routing
-app.use(cors());
-app.use('/', indexRouter, confirmToken);
-app.use('/user', userRouter, confirmToken);
-app.use('/board', boardRouter, confirmToken);
-app.use('/privilege', privilegeRouter, confirmToken);
-app.use('/object', objectRouter, confirmToken);
+app.use('/', indexRouter);
+app.use('/user', userRouter);
+app.use('/board', boardRouter);
+app.use('/privilege', privilegeRouter);
+app.use('/object', objectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

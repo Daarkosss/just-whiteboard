@@ -7,7 +7,6 @@ const confirmToken = async (req, res, next) => {
     if (!accessToken) {
        return res.status(401).json({ message: 'No token provided' });
     }
-    // console.log(accessToken);
 
     try {
         const response = await axios.get('https://www.googleapis.com/oauth2/v3/tokeninfo', {

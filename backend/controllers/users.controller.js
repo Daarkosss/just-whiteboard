@@ -15,6 +15,7 @@ const getUser = async (req, res) => {
   try {
     const { id } = req.query;
     const user = await User.findById(id);
+    console.log("wchodzę tu");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -153,6 +154,12 @@ const getUsersBoards = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const accessToken = authHeader && authHeader.split(' ')[1];
+  console.log("JWT token: ")
+  console.log(accessToken);
+  console.log("...JWT token")
+
   try {
     // Logika związana z weryfikacją tokena
     const userData = req.user;

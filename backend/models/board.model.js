@@ -9,6 +9,10 @@ const BoardSchema = mongoose.Schema({
   name: {
     type: String,
     required: true
+  },
+  dataUrl : {
+    type: String,
+    required: false
   }
 }, {
   timestamps: true
