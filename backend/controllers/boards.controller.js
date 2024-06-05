@@ -2,13 +2,19 @@ const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
 const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
 const {getObjectsByBoardId, deleteObjectsByBoardId} = require('./objects.controller.js');
-const { createCanvas, loadImage } = require('canvas');
 const fabric = require('fabric').fabric;
 
 const getBoards = async (req, res) => {
   try {
     const boards = await Board.find().populate("owner");
-    res.status(200).json(boards);
+    const boardsWithDataUrl = await Promise.all(
+      boards.map(async (board) => {
+        const dataUrl = await generateDataUrl(board);
+        return { ...board.toObject(), dataUrl }; // Tworzymy nowy obiekt z dataUrl
+      })
+    );
+
+    res.status(200).json(boardsWithDataUrl);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: String(error) });
@@ -180,21 +186,9 @@ const generateDataUrl = async (board) => {
     const objects = await getObjectsByBoardId(board._id);
     console.log(objects); // Dodane logowanie
 
-    if (objects.length === 0) {
-      // Dodaj przykładowy obiekt, gdy brak obiektów
-      const rect = new fabric.Rect({
-        width: 50,
-        height: 50,
-        left: 175,
-        top: 100,
-        fill: 'red',
-      });
-      fabricCanvas.add(rect);
-    } else {
-      for (const object of objects) {
-        const fabricObject = new fabric[object.type](object);
-        fabricCanvas.add(fabricObject);
-      }
+    for (const object of objects) {
+      const fabricObject = new fabric[object.type](object);
+      fabricCanvas.add(fabricObject);
     }
 
     fabricCanvas.renderAll();

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
 import store from '../store/RootStore';
+import { User } from '../store/AuthStore';
 
 interface DecodedToken {
   sub: string;
@@ -16,11 +17,12 @@ const LoginPanel: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const responseMessage = (response: CredentialResponse) => {
+  const handleSuccessLogin = (response: CredentialResponse) => {
     if (response.credential) {
       const decodedToken: DecodedToken = jwtDecode(response.credential);
-      const user = {
-        id: decodedToken.sub,
+      const user: User = {
+        _id: "",
+        ssoID: decodedToken.sub,
         name: decodedToken.name,
         email: decodedToken.email,
         avatar: decodedToken.picture,
@@ -28,7 +30,7 @@ const LoginPanel: React.FC = () => {
       };
 
       store.auth.setUser(user);
-      localStorage.setItem('user', JSON.stringify(user));
+      store.auth.login();
       navigate('/home');
     } else {
       console.error('No credential received');
@@ -47,7 +49,7 @@ const LoginPanel: React.FC = () => {
         shape="pill" 
         width={300} 
         locale="en" 
-        onSuccess={responseMessage} 
+        onSuccess={handleSuccessLogin} 
         onError={errorMessage}
       />
     </div>

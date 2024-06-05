@@ -10,30 +10,30 @@ const PropertiesPanel: React.FC = observer(() => {
   const { t } = useTranslation();
 
   const handleColorChange = (colorResult: { hex: string }) => {
-    console.log(store.currentBoard.selectedObject);
-    store.currentBoard.setColor(colorResult.hex);
+    console.log(store.boards.currentBoard.selectedObject);
+    store.boards.currentBoard.setColor(colorResult.hex);
   };
 
   return (
     <div>
-      {store.currentBoard.selectedObject ? (
+      {store.boards.currentBoard.selectedObject ? (
         <div className="properties-panel">
-          {store.currentBoard.selectedObject.type === 'textbox' ? (
+          {store.boards.currentBoard.selectedObject.type === 'textbox' ? (
             <Form>
               <Form.Group controlId="formFontSize" className='form-group'>
                 <Form.Label>{t('fontSize')}</Form.Label>
                 <input
                   type="number"
-                  value={store.currentBoard.fontSize}
-                  onChange={(e) => store.currentBoard.setFontSize(parseInt(e.target.value, 10))}
+                  value={store.boards.currentBoard.fontSize}
+                  onChange={(e) => store.boards.currentBoard.setFontSize(parseInt(e.target.value, 10))}
                   className="form-control"
                 />
               </Form.Group>
               <Form.Group controlId="formFontFamily" className='form-group'>
                 <Form.Label>{t('fontFamily')}</Form.Label>
                 <select
-                  value={store.currentBoard.fontFamily}
-                  onChange={(e) => store.currentBoard.setFontFamily(e.target.value)}
+                  value={store.boards.currentBoard.fontFamily}
+                  onChange={(e) => store.boards.currentBoard.setFontFamily(e.target.value)}
                   className="form-control"
                 >
                   <option value="Arial">Arial</option>
@@ -48,8 +48,8 @@ const PropertiesPanel: React.FC = observer(() => {
                 <Form.Label>{t('width')}</Form.Label>
                 <input
                   type="number"
-                  value={store.currentBoard.width}
-                  onChange={(e) => store.currentBoard.setWidth(parseInt(e.target.value, 10))}
+                  value={store.boards.currentBoard.width}
+                  onChange={(e) => store.boards.currentBoard.setWidth(parseInt(e.target.value, 10))}
                   className="form-control"
                 />
               </Form.Group>
@@ -57,8 +57,8 @@ const PropertiesPanel: React.FC = observer(() => {
                 <Form.Label>{t('height')}</Form.Label>
                 <input
                   type="number"
-                  value={store.currentBoard.height}
-                  onChange={(e) => store.currentBoard.setHeight(parseInt(e.target.value, 10))}
+                  value={store.boards.currentBoard.height}
+                  onChange={(e) => store.boards.currentBoard.setHeight(parseInt(e.target.value, 10))}
                   className="form-control"
                 />
               </Form.Group>
@@ -66,9 +66,9 @@ const PropertiesPanel: React.FC = observer(() => {
           )}
           <Form.Group controlId="formObjectColor">
             <Form.Label>{t('color')}</Form.Label>
-            <SketchPicker color={store.currentBoard.color} onChange={handleColorChange} />
+            <SketchPicker color={store.boards.currentBoard.color} onChange={handleColorChange} />
           </Form.Group>
-          <Button variant="danger" onClick={() => store.currentBoard.removeSelectedObject()}>
+          <Button variant="danger" onClick={() => store.boards.currentBoard.removeSelectedObject()}>
             {t('removeObject')}
           </Button>
         </div>

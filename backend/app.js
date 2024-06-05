@@ -16,36 +16,46 @@ const { confirmToken } = require("./middleware/jwt.middleware.js");
 
 var app = express();
 
-// middleware
+// Ustawienie widoków
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// Middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+
+// Skonfiguruj CORS
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware do potwierdzenia tokenu JWT
 app.use(confirmToken);
 
-// routing
+// Routing
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/board', boardRouter);
 app.use('/privilege', privilegeRouter);
 app.use('/object', objectRouter);
 
-// catch 404 and forward to error handler
+// Obsługa błędów 404
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Globalna obsługa błędów
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // Renderowanie strony błędu
   res.status(err.status || 500);
   res.render('error');
 });

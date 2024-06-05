@@ -15,7 +15,7 @@ var httpsOptions = {
   cert: fs.readFileSync('cert.pem')
 };
 
-var server = https.createServer(httpsOptions,app);
+var server = https.createServer(httpsOptions, app);
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
   console.log("Connected to database!");

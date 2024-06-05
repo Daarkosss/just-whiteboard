@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import WhiteboardThumbnail from '../components/WhiteboardThumbnail';
 import AddWhiteboardModal from '../components/modals/AddWhiteboardModal';
 import { Button } from 'react-bootstrap';
@@ -6,31 +7,21 @@ import { useTranslation } from 'react-i18next';
 import { HomeHeader } from '../components/Header';
 import store from '../store/RootStore';
 
-const initialWhiteboards = [
-  { id: '1', title: 'Whiteboard 1' },
-  { id: '2', title: 'Whiteboard 2' },
-  { id: '3', title: 'Whiteboard 3' },
-  { id: '4', title: 'Whiteboard 4' },
-];
-
-const Home: React.FC = () => {
+const Home: React.FC = observer(() => {
   const { t } = useTranslation();
-  const [whiteboards, setWhiteboards] = useState(initialWhiteboards);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    store.boards.fetchBoards();
+  }, []);
+
   const handleUpdateTitle = (id: string, newTitle: string) => {
-    setWhiteboards((prevWhiteboards) =>
-      prevWhiteboards.map((whiteboard) =>
-        whiteboard.id === id ? { ...whiteboard, title: newTitle } : whiteboard
-      )
-    );
+    store.boards.updateBoard(id, newTitle);
   };
 
   const handleAddWhiteboard = (title: string) => {
-    const newId = (whiteboards.length + 1).toString();
-    setWhiteboards([...whiteboards, { id: newId, title }]);
+    store.boards.createBoard(title);
   };
-
   const handleOpenModal = () => {
     setShowModal(true);
   };
@@ -38,33 +29,10 @@ const Home: React.FC = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-
-  const Login = () => {
-    fetch('https://localhost:3000/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${store.auth.user?.userToken}`  // Dodaj token JWT tutaj
-      },
-      body: JSON.stringify({
-        email: store.auth.user?.email
-      }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
-  
   
   return (
     <div>
       <HomeHeader />
-      <button onClick={Login}>Login</button>
       <div className="home-container">
         <div className="add-button-container">
           <Button className="add-button" variant="primary" onClick={handleOpenModal}>
@@ -72,11 +40,11 @@ const Home: React.FC = () => {
           </Button>
         </div>
         <div className="whiteboard-grid">
-          {whiteboards.map((whiteboard) => (
+          {store.boards.boards.map((board) => (
             <WhiteboardThumbnail
-              key={whiteboard.id}
-              id={whiteboard.id}
-              title={whiteboard.title}
+              key={board._id}
+              id={board._id}
+              title={board.name}
               onUpdateTitle={handleUpdateTitle}
             />
           ))}
@@ -90,6 +58,6 @@ const Home: React.FC = () => {
     </div>
     
   );
-};
+});
 
 export default Home;

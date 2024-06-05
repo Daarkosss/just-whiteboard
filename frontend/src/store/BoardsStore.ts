@@ -1,14 +1,16 @@
 import { makeAutoObservable } from "mobx";
 import { api, Board } from "../api/api";
+import CurrentBoardStore from "./CurrentBoardStore";
 
 class BoardsStore {
+  currentBoard: CurrentBoardStore
   boards: Board[] = [];
-  selectedBoard: Board | null = null;
   loading: boolean = false;
   error: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
+    this.currentBoard = new CurrentBoardStore();
   }
 
   async fetchBoards() {
@@ -27,7 +29,7 @@ class BoardsStore {
     this.loading = true;
     try {
       const board = await api.getBoard(id);
-      this.selectedBoard = board;
+      this.currentBoard.board = board;
     } catch (error: any) {
       this.error = error.message;
     } finally {

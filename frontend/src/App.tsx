@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate  } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import Whiteboard from './pages/Whiteboard';
@@ -10,7 +11,11 @@ const PrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
   return store.auth.user ? element : <Navigate to="/login" />;
 };
 
-const App: React.FC = () => {
+const App: React.FC = observer(() => {
+  useEffect(() => {
+    store.auth.loadUserFromStorage();
+  }, []);
+
   return (
     <div className="App">
       <Routes>
@@ -33,6 +38,6 @@ const App: React.FC = () => {
       </Routes>
     </div>
   );
-};
+});
 
 export default App;

@@ -13,7 +13,7 @@ const ButtonPanel: React.FC = observer(() => {
   const { t } = useTranslation();
 
   const addRectangle = () => {
-    const canvas = store.currentBoard.canvas;
+    const canvas = store.boards.currentBoard.canvas;
     if (canvas) {
       const rect = new fabric.Rect({
         width: 200,
@@ -28,7 +28,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addTriangle = () => {
-    const canvas = store.currentBoard.canvas;
+    const canvas = store.boards.currentBoard.canvas;
     if (canvas) {
       const triangle = new fabric.Triangle({
         width: 100,
@@ -44,7 +44,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addCircle = () => {
-    const canvas = store.currentBoard.canvas;
+    const canvas = store.boards.currentBoard.canvas;
     if (canvas) {
       const circle = new fabric.Circle({
         radius: 50,
@@ -59,7 +59,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addText = () => {
-    const canvas = store.currentBoard.canvas;
+    const canvas = store.boards.currentBoard.canvas;
     if (canvas) {
       const text = new fabric.Textbox('text', {
         left: 850,

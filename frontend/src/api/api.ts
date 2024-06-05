@@ -1,9 +1,9 @@
 import store from "../store/RootStore";
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
-const backendPort = import.meta.env.VITE_BACKEND_PORT || '8080';
-export const SOCKET_BASE_URL = "http://localhost:8085";
-export const PATH_PREFIX = `http://${backendHost}:${backendPort}/`;
+const backendPort = import.meta.env.VITE_BACKEND_PORT || '3000';
+export const SOCKET_BASE_URL = "https://localhost:8085";
+export const PATH_PREFIX = `https://${backendHost}:${backendPort}/`;
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -19,6 +19,7 @@ export interface Board {
   name: string;
   createdAt: string;
   updatedAt: string;
+  dataUrl: string;
 }
 
 class API {
@@ -57,39 +58,58 @@ class API {
       method,
       path,
       body,
-      { 'Authorization': `Bearer ${store.auth.user!.userToken}` },
+      { 'Authorization': `Bearer ${store.auth.user?.userToken}` },
     );
   }
 
-// Get all boards for the current user
-async getBoards(): Promise<Board[]> {
-  return this.authorizedFetch<Board[]>('GET', 'boards/all');
-}
+  async login(): Promise<User> {
+    return this.authorizedFetch<User>(
+      'POST',
+      'user/login',
+      { email: store.auth.user?.email }
+    );
+  }
 
-// Get a specific board by ID
-async getBoard(id: string): Promise<Board> {
-  return this.authorizedFetch<Board>('GET', `boards?id=${id}`);
-}
+  // Get all boards for the current user
+  async getBoards(): Promise<Board[]> {
+    return this.authorizedFetch<Board[]>('GET', 'board/all');
+  }
 
-// Create a new board
-async createBoard(name: string): Promise<Board> {
-  return this.authorizedFetch<Board>('POST', 'boards', { name });
-}
+  // Get a specific board by ID
+  async getBoard(id: string): Promise<Board> {
+    return this.authorizedFetch<Board>('GET', `board?id=${id}`);
+  }
 
-// Update a board by ID
-async updateBoard(id: string, name: string): Promise<Board> {
-  return this.authorizedFetch<Board>('PUT', `boards?id=${id}`, { name });
-}
+  // Create a new board
+  async createBoard(name: string): Promise<Board> {
+    return this.authorizedFetch<Board>(
+      'POST',
+      `board?userID=${store.auth.user?._id}`,
+      { name }
+  );
+  }
 
-// Delete a board by ID
-async deleteBoard(id: string): Promise<void> {
-  return this.authorizedFetch<void>('DELETE', `boards?id=${id}`);
-}
+  // Update a board by ID
+  async updateBoard(id: string, name: string): Promise<Board> {
+    return this.authorizedFetch<Board>(
+      'PUT',
+      `board?id=${id}&userID=${store.auth.user?._id}`,
+      { name }
+    );
+  }
 
-// Get all objects for a specific board by ID
-async getBoardsObjects(id: string): Promise<any[]> {
-  return this.authorizedFetch<any[]>('GET', `boards/objects?id=${id}`);
-}
+  // Delete a board by ID
+  async deleteBoard(id: string): Promise<void> {
+    return this.authorizedFetch<void>(
+      'DELETE',
+      `board?id=${id}&userID=${store.auth.user?._id}`
+    );
+  }
+
+  // Get all objects for a specific board by ID
+  async getBoardsObjects(id: string): Promise<any[]> {
+    return this.authorizedFetch<any[]>('GET', `board/objects?id=${id}`);
+  }
 }
 
 export const api = new API();

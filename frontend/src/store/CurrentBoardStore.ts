@@ -1,9 +1,11 @@
-// src/store/CanvasStore.ts
+// src/store/CurrentBoardStore.ts
 import { makeAutoObservable } from 'mobx';
 import { fabric } from 'fabric';
 import { Handler } from 'react-design-editor';
+import { Board } from '../api/api';
 
 class CurrentBoardStore {
+  board: Board | null = null;
   canvas: fabric.Canvas | null = null;
   handler: Handler | null = null;
   selectedObject: fabric.Object | null = null;
@@ -15,6 +17,10 @@ class CurrentBoardStore {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setBoard(board: Board | null) {
+    this.board = board;
   }
 
   setCanvas(canvas: fabric.Canvas) {
