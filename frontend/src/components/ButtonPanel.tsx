@@ -7,14 +7,13 @@ import { BsFillTriangleFill } from 'react-icons/bs';
 import { RiFontSize2 } from 'react-icons/ri';
 import { fabric } from 'fabric';
 import { useTranslation } from 'react-i18next';
-import { useStore } from '../store/StoreProvider';
+import store from '../store/RootStore';
 
 const ButtonPanel: React.FC = observer(() => {
-  const { canvasStore } = useStore();
   const { t } = useTranslation();
 
   const addRectangle = () => {
-    const canvas = canvasStore.canvas;
+    const canvas = store.currentBoard.canvas;
     if (canvas) {
       const rect = new fabric.Rect({
         width: 200,
@@ -29,7 +28,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addTriangle = () => {
-    const canvas = canvasStore.canvas;
+    const canvas = store.currentBoard.canvas;
     if (canvas) {
       const triangle = new fabric.Triangle({
         width: 100,
@@ -45,7 +44,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addCircle = () => {
-    const canvas = canvasStore.canvas;
+    const canvas = store.currentBoard.canvas;
     if (canvas) {
       const circle = new fabric.Circle({
         radius: 50,
@@ -60,7 +59,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   const addText = () => {
-    const canvas = canvasStore.canvas;
+    const canvas = store.currentBoard.canvas;
     if (canvas) {
       const text = new fabric.Textbox('text', {
         left: 850,

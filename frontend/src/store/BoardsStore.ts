@@ -1,17 +1,14 @@
 import { makeAutoObservable } from "mobx";
 import { api, Board } from "../api/api";
-import RootStore from './RootStore';
 
-class BoardStore {
-  rootStore: RootStore
+class BoardsStore {
   boards: Board[] = [];
   selectedBoard: Board | null = null;
   loading: boolean = false;
   error: string | null = null;
 
-  constructor(rootStore: RootStore) {
+  constructor() {
     makeAutoObservable(this);
-    this.rootStore = rootStore;
   }
 
   async fetchBoards() {
@@ -78,4 +75,4 @@ class BoardStore {
   }
 }
 
-export default BoardStore;
+export default BoardsStore;

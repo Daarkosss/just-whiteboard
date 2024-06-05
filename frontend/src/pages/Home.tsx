@@ -4,7 +4,7 @@ import AddWhiteboardModal from '../components/modals/AddWhiteboardModal';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { HomeHeader } from '../components/Header';
-import { useStore } from '../store/StoreProvider';
+import store from '../store/RootStore';
 
 const initialWhiteboards = [
   { id: '1', title: 'Whiteboard 1' },
@@ -14,7 +14,6 @@ const initialWhiteboards = [
 ];
 
 const Home: React.FC = () => {
-  const { userStore } = useStore();
   const { t } = useTranslation();
   const [whiteboards, setWhiteboards] = useState(initialWhiteboards);
   const [showModal, setShowModal] = useState(false);
@@ -46,10 +45,10 @@ const Home: React.FC = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${userStore.user?.userToken}`  // Dodaj token JWT tutaj
+        'Authorization': `Bearer ${store.auth.user?.userToken}`  // Dodaj token JWT tutaj
       },
       body: JSON.stringify({
-        email: userStore.user?.email
+        email: store.auth.user?.email
       }),
     })
     .then(response => response.json())

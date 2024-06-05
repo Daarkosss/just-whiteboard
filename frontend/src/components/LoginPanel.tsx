@@ -3,7 +3,7 @@ import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
-import { useStore } from '../store/StoreProvider';
+import store from '../store/RootStore';
 
 interface DecodedToken {
   sub: string;
@@ -13,7 +13,6 @@ interface DecodedToken {
 }
 
 const LoginPanel: React.FC = () => {
-  const { userStore } = useStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -28,7 +27,7 @@ const LoginPanel: React.FC = () => {
         userToken: response.credential,
       };
 
-      userStore.setUser(user);
+      store.auth.setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
       navigate('/home');
     } else {

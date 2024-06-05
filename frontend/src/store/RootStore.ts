@@ -1,17 +1,17 @@
-import UserStore from './UserStore';
-import CanvasStore from './CanvasStore';
-import BoardStore from './BoardStore';
+import AuthStore from './AuthStore';
+import CurrentBoardStore from './CurrentBoardStore';
+import BoardsStore from './BoardsStore';
 
 class RootStore {
-  userStore: UserStore;
-  canvasStore: CanvasStore;
-  boardStore: BoardStore;
+  auth: AuthStore;
+  currentBoard: CurrentBoardStore;
+  boards: BoardsStore;
 
   constructor() {
-    this.userStore = new UserStore(this);
-    this.canvasStore = new CanvasStore(this);
-    this.boardStore = new BoardStore(this);
+    this.auth = new AuthStore();
+    this.currentBoard = new CurrentBoardStore();
+    this.boards = new BoardsStore();
   }
 }
 
-export default RootStore;
+export default new RootStore();

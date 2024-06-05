@@ -1,4 +1,4 @@
-import { useStore } from '../store/StoreProvider';
+import store from "../store/RootStore";
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
 const backendPort = import.meta.env.VITE_BACKEND_PORT || '8080';
@@ -22,7 +22,6 @@ export interface Board {
 }
 
 class API {
-  rootStore = useStore();
 
   async fetch<T>(
     method: Method,
@@ -58,7 +57,7 @@ class API {
       method,
       path,
       body,
-      { 'Authorization': `Bearer ${this.rootStore.userStore.user!.userToken}` },
+      { 'Authorization': `Bearer ${store.auth.user!.userToken}` },
     );
   }
 

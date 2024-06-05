@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import RootStore from './RootStore';
 
 interface User {
   id: string;
@@ -9,13 +8,11 @@ interface User {
   userToken: string;
 }
 
-class UserStore {
-  rootStore: RootStore;
+class AuthStore {
   user: User | null = null;
 
-  constructor(rootStore: RootStore) {
+  constructor() {
     makeAutoObservable(this);
-    this.rootStore = rootStore;
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       this.user = JSON.parse(storedUser);
@@ -40,4 +37,4 @@ class UserStore {
   }
 }
 
-export default UserStore;
+export default AuthStore;
