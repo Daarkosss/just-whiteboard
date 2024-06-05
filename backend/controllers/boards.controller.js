@@ -175,25 +175,36 @@ const deleteOwnerBoards = async (userID) => {
 };
 
 const generateDataUrl = async (board) => {
-  const canvas = fabric.createCanvasForNode(400, 250);
+  const fabricCanvas = new fabric.StaticCanvas(null, { width: 400, height: 250 });
   try {
     const objects = await getObjectsByBoardId(board._id);
+    console.log(objects); // Dodane logowanie
+
     if (objects.length === 0) {
-      return null;
+      // Dodaj przykładowy obiekt, gdy brak obiektów
+      const rect = new fabric.Rect({
+        width: 50,
+        height: 50,
+        left: 175,
+        top: 100,
+        fill: 'red',
+      });
+      fabricCanvas.add(rect);
+    } else {
+      for (const object of objects) {
+        const fabricObject = new fabric[object.type](object);
+        fabricCanvas.add(fabricObject);
+      }
     }
 
-    for (const object of objects) {
-      const fabricObject = new fabric[object.type](object);
-      canvas.add(fabricObject);
-    }
-    canvas.renderAll();
-    const dataUrl = canvas.toDataURL();
+    fabricCanvas.renderAll();
+    const dataUrl = fabricCanvas.toDataURL();
 
     return dataUrl;
   } catch (error) {
     throw error;
   }
-}
+};
 
 module.exports = {
   getBoards,
