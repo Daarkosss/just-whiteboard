@@ -10,7 +10,7 @@
   height: 700px;
   width: 75%;
   grid-template-columns: repeat(3, 1fr);
-  height: fit-content;
+  grid-auto-rows: minmax(280px, 1fr);
   gap: 50px;
   background-color: $medium-blue;
   padding: 40px;
