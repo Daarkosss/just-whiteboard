@@ -1,6 +1,7 @@
 const Privilege = require("../models/privilege.model.js");
 const User = require("../models/user.model.js");
 const Board = require("../models/board.model.js");
+const { generateDataUrl } = require("./boards.controller.js");
 
 const addPrivilege = async (boardId, userId) => {
   try {
@@ -12,7 +13,7 @@ const addPrivilege = async (boardId, userId) => {
     return newPrivilege;
   } catch (error) {
     console.error("Error adding privilege: ", error);
-    throw error;  // Rzucamy wyjątek, aby obsłużyć go w kontrolerze Board
+    throw error;
   }
 };
 
@@ -22,7 +23,14 @@ const getUserBoardsByPrivileges = async (userId) => {
     console.log({ userId });
     const privileges = await Privilege.find({ userId }).populate('boardId');
     const boards = privileges.map(priv => priv.boardId);
-    return boards;
+    const boardsWithDataUrl = await Promise.all(
+      boards.map(async (board) => {
+        const dataUrl = await generateDataUrl(board);
+        return { ...board.toObject(), dataUrl };
+      })
+    );
+    console.log(boardsWithDataUrl);
+    return boardsWithDataUrl;
   } catch (error) {
     // console.error("Error in getUserBoardsByPrivileges:", error);
     throw error;  // Rzucenie błędu pozwoli wywołującemu obsłużyć go odpowiednio

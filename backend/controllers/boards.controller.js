@@ -10,7 +10,7 @@ const getBoards = async (req, res) => {
     const boardsWithDataUrl = await Promise.all(
       boards.map(async (board) => {
         const dataUrl = await generateDataUrl(board);
-        return { ...board.toObject(), dataUrl }; // Tworzymy nowy obiekt z dataUrl
+        return { ...board.toObject(), dataUrl };
       })
     );
 
@@ -207,5 +207,6 @@ module.exports = {
   updateBoard,
   deleteBoard,
   getBoardsObjects,
+  generateDataUrl,
   deleteOwnerBoards
 };

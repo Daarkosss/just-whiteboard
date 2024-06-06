@@ -13,7 +13,7 @@ const {
 router.get('/all', getUsers);
 router.get('/', getUser);
 router.get('/ssoid', getUserBySSOID);
-router.get('/users-boards', getUsersBoards);
+router.get('/boards', getUsersBoards);
 router.post('/login', loginUser);
 router.put('/', updateUser);
 router.delete('/', deleteUser);
