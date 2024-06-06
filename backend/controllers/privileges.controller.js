@@ -1,6 +1,8 @@
 const Privilege = require("../models/privilege.model.js");
 const User = require("../models/user.model.js");
 const Board = require("../models/board.model.js");
+const { getObjectsByBoardId } = require('./objects.controller.js');
+const fabric = require('fabric').fabric;
 
 const addPrivilege = async (boardId, userId) => {
   try {
