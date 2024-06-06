@@ -1,6 +1,6 @@
 const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
-const { addPrivilege, removePrivilegesByBoardId } = require('./privileges.controller'); // Import funkcji z privileges.controller
+const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
 const { getObjectsByBoardId, deleteObjectsByBoardId } = require('./objects.controller.js');
 const fabric = require('fabric').fabric;
 
@@ -33,13 +33,12 @@ const getBoard = async (req, res) => {
     }
     const dataUrl = await generateDataUrl(board)
     board.dataUrl = dataUrl;
-    // board.dataUrl = "śmieszne";
     board.save();
     res.status(200).json(board);
   } catch (error) {
     console.log(error);
     if(error.name === "CastError") {
-        return res.status(400).json({ message: "Invlaid board ID" });
+        return res.status(400).json({ message: "Invalid board ID" });
     }
     res.status(500).json({ message: String(error) });
   }
@@ -148,10 +147,18 @@ const deleteBoard = async (req, res) => {
 
 const getBoardsObjects = async (req, res) => {
   try {
-    const { id } = req.query; // Pobieranie boardID z query
+    const { id, userID } = req.query;
 
     if (!id) {
       return res.status(400).json({ message: "Board ID must be provided" });
+    }
+    if (!userID) {
+      return res.status(400).json({ message: "User ID must be provided" });
+    }
+
+    const boards = await getUserBoardsByPrivileges(userID);
+    if (!boards.some(board => board._id.toString() === id)) {
+      addPrivilege(id, userID);
     }
 
     const objects = await getObjectsByBoardId(id);

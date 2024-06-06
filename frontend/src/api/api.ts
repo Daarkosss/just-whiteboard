@@ -8,6 +8,10 @@ export const PATH_PREFIX = `https://${backendHost}:${backendPort}/`;
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+export interface Error {
+  message: string;
+}
+
 export interface User {
   _id: string;
   name: string;
@@ -16,11 +20,32 @@ export interface User {
 
 export interface Board {
   _id: string;
-  owner: User;
+  owner: string;
   name: string;
   createdAt: string;
   updatedAt: string;
   dataUrl: string;
+}
+
+export interface BoardObject {
+  _id: string;
+  boardId: string;
+  type: string;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  angle: number;
+  layer: number;
+  fill: string;
+  text?: string;
+  fontSize?: number;
+  textAlign?: string;
+  underline?: boolean;
+  italic?: boolean;
+  bold?: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 class API {
@@ -72,7 +97,6 @@ class API {
         'user/login',
         { email: store.auth.user?.email }
       );
-      console.log(response)
       return response;
     } catch (error: unknown) {
       console.log(error);
@@ -118,8 +142,8 @@ class API {
   }
 
   // Get all objects for a specific board by ID
-  async getBoardsObjects(id: string): Promise<any[]> {
-    return this.authorizedFetch<any[]>('GET', `board/objects?id=${id}`);
+  async getBoardsObjects(id: string): Promise<BoardObject[]> {
+    return this.authorizedFetch<BoardObject[]>('GET', `board/objects?id=${id}&userID=${store.auth.user?._id}`);
   }
 }
 

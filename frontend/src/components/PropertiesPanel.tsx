@@ -16,7 +16,7 @@ const PropertiesPanel: React.FC = observer(() => {
 
   return (
     <div>
-      {store.boards.currentBoard.selectedObject ? (
+      {store.boards.currentBoard.selectedObject &&
         <div className="properties-panel">
           {store.boards.currentBoard.selectedObject.type === 'textbox' ? (
             <Form>
@@ -72,9 +72,7 @@ const PropertiesPanel: React.FC = observer(() => {
             {t('removeObject')}
           </Button>
         </div>
-      ) : (
-        <p>Click an object to edit it</p>
-      )}
+      }
     </div>
   );
 });

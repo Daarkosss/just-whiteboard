@@ -47,11 +47,10 @@ const Home: React.FC = observer(() => {
           </div>
         ) : (
           <div className="whiteboard-grid">
-            {store.boards.boards.map((board) => (
+            {store.boards.userBoards.map((board) => (
               <WhiteboardThumbnail
                 key={board._id}
-                id={board._id}
-                title={board.name}
+                board={board}
                 onUpdateTitle={handleUpdateTitle}
               />
             ))}

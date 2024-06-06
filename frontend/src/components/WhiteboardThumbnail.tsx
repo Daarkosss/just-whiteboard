@@ -4,20 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 import { FaEdit } from 'react-icons/fa';
 import EditWhiteBoardModal from './modals/EditWhiteboardModal';
+import { Board } from '../api/api';
 import store from '../store/RootStore';
 
 interface WhiteboardThumbnailProps {
-  id: string;
-  title: string;
+  board: Board;
   onUpdateTitle: (id: string, newTitle: string) => void;
 }
 
-const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id, title, onUpdateTitle }) => {
+const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ board, onUpdateTitle }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/whiteboard/${id}`);
+    navigate(`/whiteboard/${board._id}`);
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
@@ -30,25 +30,26 @@ const WhiteboardThumbnail: React.FC<WhiteboardThumbnailProps> = ({ id, title, on
   };
 
   const handleSaveChanges = (newTitle: string) => {
-    onUpdateTitle(id, newTitle);
+    onUpdateTitle(board._id, newTitle);
     setShowModal(false);
   };
+  console.log(board.owner, store.auth.user?._id);
 
   return (
     <>
       <Card border="dark" className="whiteboard-thumbnail" onClick={handleClick}>
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <span>{title}</span>
-          <FaEdit className="edit-icon" onClick={handleEditClick} />
+          <span>{board.name}</span>
+          {board.owner === store.auth.user?._id && <FaEdit className="edit-icon" onClick={handleEditClick} />}
         </Card.Header>
-        <Card.Img variant="top" src={store.boards.boards.find((board) => board._id === id)?.dataUrl} />
+        <Card.Img variant="top" src={board.dataUrl} />
       </Card>
       <EditWhiteBoardModal
         show={showModal}
         handleClose={handleCloseModal}
-        initialTitle={title}
+        initialTitle={board.name}
         onSave={handleSaveChanges}
-        title={title}
+        title={board.name}
       />
     </>
   );

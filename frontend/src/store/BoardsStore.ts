@@ -1,13 +1,11 @@
 import { makeAutoObservable } from "mobx";
-import { api, Board } from "../api/api";
+import { api, Board, Error } from "../api/api";
 import CurrentBoardStore from "./CurrentBoardStore";
-import store from "./RootStore";
 
 class BoardsStore {
   currentBoard: CurrentBoardStore
-  boards: Board[] = [];
+  userBoards: Board[] = [];
   isLoading: boolean = false;
-  error: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -16,17 +14,8 @@ class BoardsStore {
 
   async fetchBoards() {
     this.isLoading = true;
-    console.log(this.isLoading);
-    try {
-      console.log(store.auth.user?._id);
-      const boards = await api.getBoards();
-      this.boards = boards;
-    } catch (error: any) {
-      this.error = error.message;
-    } finally {
-      this.isLoading = false;
-      console.log(this.isLoading);
-    }
+    this.userBoards = await api.getBoards();
+    this.isLoading = false;
   }
 
   async fetchBoard(id: string) {
@@ -34,8 +23,25 @@ class BoardsStore {
     try {
       const board = await api.getBoard(id);
       this.currentBoard.board = board;
-    } catch (error: any) {
-      this.error = error.message;
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error.message);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async fetchBoardObjects(id: string) {
+    this.isLoading = true;
+    try {
+      const boardObjects = await api.getBoardsObjects(id);
+      this.currentBoard.canvas?.loadFromJSON(boardObjects, () => {
+        this.currentBoard.canvas?.renderAll();
+      });
+      console.log(this.currentBoard?.canvas?._objects);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error.message);
     } finally {
       this.isLoading = false;
     }
@@ -45,9 +51,10 @@ class BoardsStore {
     this.isLoading = true;
     try {
       const newBoard = await api.createBoard(name);
-      this.boards.push(newBoard);
-    } catch (error: any) {
-      this.error = error.message;
+      this.userBoards.push(newBoard);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error.message);
     } finally {
       this.isLoading = false;
     }
@@ -57,12 +64,13 @@ class BoardsStore {
     this.isLoading = true;
     try {
       const updatedBoard = await api.updateBoard(id, name);
-      const index = this.boards.findIndex(board => board._id === id);
+      const index = this.userBoards.findIndex(board => board._id === id);
       if (index !== -1) {
-        this.boards[index] = updatedBoard;
+        this.userBoards[index] = updatedBoard;
       }
-    } catch (error: any) {
-      this.error = error.message;
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error.message);
     } finally {
       this.isLoading = false;
     }
@@ -72,19 +80,23 @@ class BoardsStore {
     this.isLoading = true;
     try {
       await api.deleteBoard(id);
-      this.boards = this.boards.filter(board => board._id !== id);
-    } catch (error: any) {
-      this.error = error.message;
+      this.userBoards = this.userBoards.filter(board => board._id !== id);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(error.message);
     } finally {
       this.isLoading = false;
     }
   }
 
+  getUserBoardById(id: string) {
+    return this.userBoards.find(board => board._id === id);
+  }
+
   reset() {
-    this.boards = [];
+    this.userBoards = [];
     this.currentBoard = new CurrentBoardStore();
     this.isLoading = false;
-    this.error = null;
   }
 }
 
