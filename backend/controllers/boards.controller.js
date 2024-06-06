@@ -60,6 +60,7 @@ const createBoard = async (req, res) => {
       owner: user._id,
       name: req.body.name,
     });
+    newBoard.dataUrl = await generateDataUrl(newBoard);
     await newBoard.save();
     
     await addPrivilege(newBoard._id, newBoard.owner);

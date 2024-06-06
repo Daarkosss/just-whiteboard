@@ -39,16 +39,15 @@ class AuthStore {
     }
   }
 
-  login() {
-    api.login().then((user) => {
-      if (this.user) {
-        this.user._id = user._id;
-        this.saveUserToStorage();
-      }
-    });
+  async login() {
+    const user = await api.login();
+    if (this.user) {
+      this.user._id = user._id;
+      this.saveUserToStorage();
+    }
   }
 
-  logout() {
+  reset() {
     this.user = null;
     localStorage.removeItem('user');
   }

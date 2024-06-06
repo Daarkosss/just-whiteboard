@@ -116,7 +116,6 @@ const generateDataUrl = async (board) => {
   const fabricCanvas = new fabric.StaticCanvas(null, { width: 400, height: 250 });
   try {
     const objects = await getObjectsByBoardId(board._id);
-    console.log(objects); // Dodane logowanie
 
     for (const object of objects) {
       const fabricObject = new fabric[object.type](object);

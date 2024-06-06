@@ -17,7 +17,7 @@ const LoginPanel: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleSuccessLogin = (response: CredentialResponse) => {
+  const handleSuccessLogin = async (response: CredentialResponse) => {
     if (response.credential) {
       const decodedToken: DecodedToken = jwtDecode(response.credential);
       const user: User = {
@@ -30,7 +30,7 @@ const LoginPanel: React.FC = () => {
       };
 
       store.auth.setUser(user);
-      store.auth.login();
+      await store.auth.login();
       navigate('/home');
     } else {
       console.error('No credential received');

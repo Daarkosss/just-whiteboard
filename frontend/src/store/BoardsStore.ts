@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { api, Board } from "../api/api";
 import CurrentBoardStore from "./CurrentBoardStore";
+import store from "./RootStore";
 
 class BoardsStore {
   currentBoard: CurrentBoardStore
@@ -16,6 +17,7 @@ class BoardsStore {
   async fetchBoards() {
     this.loading = true;
     try {
+      console.log(store.auth.user?._id);
       const boards = await api.getBoards();
       this.boards = boards;
     } catch (error: any) {
@@ -74,6 +76,13 @@ class BoardsStore {
     } finally {
       this.loading = false;
     }
+  }
+
+  reset() {
+    this.boards = [];
+    this.currentBoard = new CurrentBoardStore();
+    this.loading = false;
+    this.error = null;
   }
 }
 

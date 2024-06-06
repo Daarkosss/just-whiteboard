@@ -6,6 +6,8 @@
 
   .whiteboard-grid {
     display: grid;
+    min-height: 400px;
+    min-width: 1400px;
     grid-template-columns: repeat(3, 1fr);
     gap: 50px;
     background-color: $medium-blue;

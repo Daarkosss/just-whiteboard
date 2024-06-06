@@ -72,6 +72,7 @@ class API {
 
   // Get all boards for the current user
   async getBoards(): Promise<Board[]> {
+    console.log(store.auth.user?._id);
     return this.authorizedFetch<Board[]>('GET', `user/boards?userID=${store.auth.user?._id}`);
   }
 

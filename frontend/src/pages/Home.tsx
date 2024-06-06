@@ -12,6 +12,7 @@ const Home: React.FC = observer(() => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    console.log(store.auth.user?._id);
     store.boards.fetchBoards();
   }, []);
 
