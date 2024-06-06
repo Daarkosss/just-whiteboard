@@ -13,7 +13,6 @@ const PrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
 
 const App: React.FC = observer(() => {
   useEffect(() => {
-    console.log(localStorage.getItem('user'));
     store.auth.loadUserFromStorage();
   }, []);
 

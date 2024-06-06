@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import store from "../store/RootStore";
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
@@ -43,7 +44,8 @@ class API {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.errorMessage || 'Wrong server response!');
+      toast.error(data.message || 'Wrong server response!');
+      throw new Error(data.message || 'Wrong server response!');
     } else {
       return data;
     }
