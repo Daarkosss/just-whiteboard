@@ -64,12 +64,20 @@ class API {
     );
   }
 
-  async login(): Promise<User> {
-    return this.authorizedFetch<User>(
-      'POST',
-      'user/login',
-      { email: store.auth.user?.email }
-    );
+  async login(): Promise<User | null> {
+    try {
+      console.log('login');
+      const response = await this.authorizedFetch<User>(
+        'POST',
+        'user/login',
+        { email: store.auth.user?.email }
+      );
+      console.log(response)
+      return response;
+    } catch (error: unknown) {
+      console.log(error);
+      return null;
+    }
   }
 
   // Get all boards for the current user

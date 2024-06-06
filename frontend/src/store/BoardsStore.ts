@@ -6,7 +6,7 @@ import store from "./RootStore";
 class BoardsStore {
   currentBoard: CurrentBoardStore
   boards: Board[] = [];
-  loading: boolean = false;
+  isLoading: boolean = false;
   error: string | null = null;
 
   constructor() {
@@ -15,7 +15,8 @@ class BoardsStore {
   }
 
   async fetchBoards() {
-    this.loading = true;
+    this.isLoading = true;
+    console.log(this.isLoading);
     try {
       console.log(store.auth.user?._id);
       const boards = await api.getBoards();
@@ -23,36 +24,37 @@ class BoardsStore {
     } catch (error: any) {
       this.error = error.message;
     } finally {
-      this.loading = false;
+      this.isLoading = false;
+      console.log(this.isLoading);
     }
   }
 
   async fetchBoard(id: string) {
-    this.loading = true;
+    this.isLoading = true;
     try {
       const board = await api.getBoard(id);
       this.currentBoard.board = board;
     } catch (error: any) {
       this.error = error.message;
     } finally {
-      this.loading = false;
+      this.isLoading = false;
     }
   }
 
   async createBoard(name: string) {
-    this.loading = true;
+    this.isLoading = true;
     try {
       const newBoard = await api.createBoard(name);
       this.boards.push(newBoard);
     } catch (error: any) {
       this.error = error.message;
     } finally {
-      this.loading = false;
+      this.isLoading = false;
     }
   }
 
   async updateBoard(id: string, name: string) {
-    this.loading = true;
+    this.isLoading = true;
     try {
       const updatedBoard = await api.updateBoard(id, name);
       const index = this.boards.findIndex(board => board._id === id);
@@ -62,26 +64,26 @@ class BoardsStore {
     } catch (error: any) {
       this.error = error.message;
     } finally {
-      this.loading = false;
+      this.isLoading = false;
     }
   }
 
   async deleteBoard(id: string) {
-    this.loading = true;
+    this.isLoading = true;
     try {
       await api.deleteBoard(id);
       this.boards = this.boards.filter(board => board._id !== id);
     } catch (error: any) {
       this.error = error.message;
     } finally {
-      this.loading = false;
+      this.isLoading = false;
     }
   }
 
   reset() {
     this.boards = [];
     this.currentBoard = new CurrentBoardStore();
-    this.loading = false;
+    this.isLoading = false;
     this.error = null;
   }
 }

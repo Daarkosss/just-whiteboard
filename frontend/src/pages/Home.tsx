@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { Button } from 'react-bootstrap';
+import { MoonLoader } from 'react-spinners';
 import WhiteboardThumbnail from '../components/WhiteboardThumbnail';
 import AddWhiteboardModal from '../components/modals/AddWhiteboardModal';
-import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { HomeHeader } from '../components/Header';
 import store from '../store/RootStore';
@@ -40,16 +41,22 @@ const Home: React.FC = observer(() => {
             {t('addWhiteboard')}
           </Button>
         </div>
-        <div className="whiteboard-grid">
-          {store.boards.boards.map((board) => (
-            <WhiteboardThumbnail
-              key={board._id}
-              id={board._id}
-              title={board.name}
-              onUpdateTitle={handleUpdateTitle}
-            />
-          ))}
-        </div>
+        {store.boards.isLoading ? (
+          <div className="spinner-container">
+            <MoonLoader color="#0b5ed7" size={70} speedMultiplier={2}/>
+          </div>
+        ) : (
+          <div className="whiteboard-grid">
+            {store.boards.boards.map((board) => (
+              <WhiteboardThumbnail
+                key={board._id}
+                id={board._id}
+                title={board.name}
+                onUpdateTitle={handleUpdateTitle}
+              />
+            ))}
+          </div>
+        )}
         <AddWhiteboardModal
           show={showModal}
           handleClose={handleCloseModal}
@@ -57,7 +64,6 @@ const Home: React.FC = observer(() => {
         />
       </div>
     </div>
-    
   );
 });
 

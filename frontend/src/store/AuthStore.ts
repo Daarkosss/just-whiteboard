@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { api } from "../api/api";
+import store from "./RootStore";
 
 export interface User {
   _id: string;
@@ -26,25 +27,42 @@ class AuthStore {
     this.user = user;
   }
 
-  saveUserToStorage() {
+  saveUserToStorage(user?: User) {
+    if (user) {
+      this.user = user;
+    }
     if (this.user) {
       localStorage.setItem('user', JSON.stringify(this.user));
     }
   }
 
   loadUserFromStorage() {
+      this.user = this.getUserFromStorage();
+  }
+
+  getUserFromStorage() {
     const user = localStorage.getItem('user');
     if (user) {
-      this.user = JSON.parse(user);
+      return JSON.parse(user);
+    } else {
+      return null;
     }
   }
 
-  async login() {
-    const user = await api.login();
-    if (this.user) {
-      this.user._id = user._id;
+  async login(): Promise<User | null> {
+    const responseUser = await api.login();
+    const storageUser = this.getUserFromStorage();
+    if (storageUser && responseUser) {
+      this.user = { 
+        ...storageUser,
+        _id: responseUser._id
+      };
+      console.log(this.user);
       this.saveUserToStorage();
+    } else {
+      store.reset();
     }
+    return this.user;
   }
 
   reset() {

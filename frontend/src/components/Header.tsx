@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import store from '../store/RootStore';
 import { observer } from 'mobx-react-lite';
+import { toast } from 'react-toastify';
 
 export const LoginHeader: React.FC = observer(() => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export const HomeHeader: React.FC = observer(() => {
 
   const handleLogout = () => {
     store.reset();
+    toast.info('Logged out successfully!');
     navigate('/');
   };
 

@@ -28,8 +28,8 @@ const LoginPanel: React.FC = () => {
         avatar: decodedToken.picture,
         userToken: response.credential,
       };
+      store.auth.saveUserToStorage(user);
 
-      store.auth.setUser(user);
       await store.auth.login();
       navigate('/home');
     } else {
