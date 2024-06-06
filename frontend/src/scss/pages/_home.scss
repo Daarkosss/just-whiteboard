@@ -10,7 +10,7 @@
   height: 700px;
   width: 75%;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(auto-fill, minmax(280px, 1fr));
+  height: fit-content;
   gap: 50px;
   background-color: $medium-blue;
   padding: 40px;
@@ -20,14 +20,10 @@
 }
 
 .whiteboard-thumbnail {
+  position: relative;
+  width: 100%;
   cursor: pointer;
-  height: 100%;
-}
-
-.whiteboard-thumbnail img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
+  overflow: hidden;
 }
 
 .whiteboard-thumbnail:hover {
