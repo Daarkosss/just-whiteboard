@@ -1,6 +1,6 @@
 const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
-const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
+const { addPrivilege, removePrivilegesByBoardId } = require('./privileges.controller'); // Import funkcji z privileges.controller
 const {getObjectsByBoardId, deleteObjectsByBoardId} = require('./objects.controller.js');
 const fabric = require('fabric').fabric;
 

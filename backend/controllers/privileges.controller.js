@@ -1,7 +1,6 @@
 const Privilege = require("../models/privilege.model.js");
 const User = require("../models/user.model.js");
 const Board = require("../models/board.model.js");
-const { generateDataUrl } = require("./boards.controller.js");
 
 const addPrivilege = async (boardId, userId) => {
   try {
@@ -107,6 +106,26 @@ const removePrivilegesByBoardId = async (boardId) => {
     return result;
   } catch (error) {
     console.error("Error removing privileges: ", error);
+    throw error;
+  }
+};
+
+const generateDataUrl = async (board) => {
+  const fabricCanvas = new fabric.StaticCanvas(null, { width: 400, height: 250 });
+  try {
+    const objects = await getObjectsByBoardId(board._id);
+    console.log(objects); // Dodane logowanie
+
+    for (const object of objects) {
+      const fabricObject = new fabric[object.type](object);
+      fabricCanvas.add(fabricObject);
+    }
+
+    fabricCanvas.renderAll();
+    const dataUrl = fabricCanvas.toDataURL();
+
+    return dataUrl;
+  } catch (error) {
     throw error;
   }
 };
