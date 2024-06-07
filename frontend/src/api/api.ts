@@ -35,6 +35,7 @@ export interface BoardObject {
   top: number;
   width: number;
   height: number;
+  radius: number;
   angle: number;
   layer: number;
   fill: string;

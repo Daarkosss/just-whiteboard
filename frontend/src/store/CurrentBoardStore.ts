@@ -75,7 +75,13 @@ class CurrentBoardStore {
 
   convertToFabricFormat(objects: BoardObject[]) {
     return {
-      objects: objects
+      version: '4.6.0',
+      objects: objects.map((object) => {
+        if (object.type === 'circle' && !object.radius) {
+          object.radius = object.width / 2;
+        }
+        return object;
+      }),
     };
   }
 
