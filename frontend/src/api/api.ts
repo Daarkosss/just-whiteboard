@@ -3,7 +3,7 @@ import store from "../store/RootStore";
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST || window.location.hostname;
 const backendPort = import.meta.env.VITE_BACKEND_PORT || '3000';
-export const SOCKET_BASE_URL = "https://localhost:8085";
+export const SOCKET_BASE_URL = "https://localhost:3000";
 export const PATH_PREFIX = `https://${backendHost}:${backendPort}/`;
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -46,6 +46,11 @@ export interface BoardObject {
   bold?: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BoardWithObjects {
+  board: Board;
+  objects: BoardObject[];
 }
 
 class API {
@@ -142,8 +147,8 @@ class API {
   }
 
   // Get all objects for a specific board by ID
-  async getBoardsObjects(id: string): Promise<BoardObject[]> {
-    return this.authorizedFetch<BoardObject[]>('GET', `board/objects?id=${id}&userID=${store.auth.user?._id}`);
+  async getBoardsObjects(id: string): Promise<BoardWithObjects> {
+    return this.authorizedFetch<BoardWithObjects>('GET', `board/objects?id=${id}&userID=${store.auth.user?._id}`);
   }
 }
 

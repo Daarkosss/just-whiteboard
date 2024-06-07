@@ -21,8 +21,10 @@ class BoardsStore {
   async fetchBoard(id: string) {
     this.isLoading = true;
     try {
-      const board = await api.getBoard(id);
+      const { board, objects } = await api.getBoardsObjects(id);
       this.currentBoard.board = board;
+      console.log(this.currentBoard.board);
+      this.currentBoard.updateCanvas(objects);
     } catch (err: unknown) {
       const error = err as Error;
       console.error(error.message);

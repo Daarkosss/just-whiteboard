@@ -76,6 +76,18 @@ const getObjectsByBoardId = async (boardId) => {
   }
 };
 
+// Update Objects by Board ID
+const updateObjectsByBoardId = async (boardId, objects) => {
+  try {
+    await ObjectModel.deleteMany({ boardId });
+    const newObjects = objects.map(object => ({ ...object, boardId }));
+    await ObjectModel.insertMany(newObjects);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const deleteObjectsByBoardId = async (boardId) => {
     try {
       const objects = await ObjectModel.deleteMany({ boardId });
@@ -93,5 +105,6 @@ module.exports = {
   updateObject,
   deleteObject,
   getObjectsByBoardId,
-  deleteObjectsByBoardId
+  deleteObjectsByBoardId,
+  updateObjectsByBoardId
 };

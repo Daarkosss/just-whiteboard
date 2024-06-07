@@ -1,21 +1,50 @@
 var app = require('../app.js');
 var debug = require('debug')('just-whiteboard:server');
-var http = require('http');
 var https = require('https');
 var fs = require('fs');
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
+const { Server } = require("socket.io");
+const { updateObjectsByBoardId } = require("../controllers/objects.controller.js");
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-// https options for secure connection
 var httpsOptions = {
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem')
 };
 
 var server = https.createServer(httpsOptions, app);
+
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT']
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  // Przykład nasłuchiwania zdarzenia 'canvas-change'
+  socket.on('canvas-change', async (data) => {
+    const { boardId, objects } = data;
+    await updateObjectsByBoardId(boardId, objects);
+    console.log('Canvas changed');
+    socket.broadcast.emit('canvas-change', objects);
+  });
+
+  // Przykład nasłuchiwania zdarzenia 'cursor-position'
+  socket.on('cursor-position', (data) => {
+    // Emituj zdarzenie do wszystkich połączonych klientów
+    socket.broadcast.emit('cursor-position', data);
+  });
+});
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
   console.log("Connected to database!");
@@ -26,8 +55,6 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
 
 server.on('error', onError);
 server.on('listening', onListening);
-
-// helper functions
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -44,7 +71,6 @@ function normalizePort(val) {
 
   return false;
 }
-
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -69,7 +95,6 @@ function onError(error) {
       throw error;
   }
 }
-
 
 function onListening() {
   var addr = server.address();

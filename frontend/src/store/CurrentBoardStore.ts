@@ -2,7 +2,9 @@
 import { makeAutoObservable } from 'mobx';
 import { fabric } from 'fabric';
 import { Handler } from 'react-design-editor';
-import { Board } from '../api/api';
+import { Board, BoardObject } from '../api/api';
+import socketManager from "../api/SocketManager";
+import { debounce } from 'lodash';
 
 class CurrentBoardStore {
   board: Board | null = null;
@@ -19,16 +21,68 @@ class CurrentBoardStore {
     makeAutoObservable(this);
   }
 
+  setCanvas(canvas: fabric.Canvas) {
+    
+    const emitCanvasChange = debounce(() => {
+      this.emitCanvasChange();
+      console.log('Canvas change emitted');
+    }, 300); // Opóźnienie 300ms
+    
+    const events = [
+      'object:modified',
+      'selection:updated',
+      'object:moved',
+      'object:added',
+      'object:removed',
+      'object:scaling',
+      'object:rotated'
+    ];
+    
+    events.forEach(event => {
+      canvas.on(event, emitCanvasChange);
+    });
+    this.canvas = canvas;
+  }
+
   setBoard(board: Board | null) {
     this.board = board;
   }
 
-  setCanvas(canvas: fabric.Canvas) {
-    this.canvas = canvas;
-  }
-
   setHandler(handler: Handler) {
     this.handler = handler;
+  }
+
+  emitCanvasChange() {
+    if (this.canvas) {
+      const objects = this.canvas.getObjects().map(obj => obj.toJSON());
+      const data = { boardId: this.board?._id, objects };
+      console.log(data);
+      socketManager.emitCanvasChange(data);
+    }
+  }
+
+  convertToFabricFormat(objects: BoardObject[]) {
+    return {
+      objects: objects
+    };
+  }
+
+  updateCanvas(data: BoardObject[]) {
+    if (this.canvas) {
+      const fabricData = this.convertToFabricFormat(data);
+      this.canvas.loadFromJSON(fabricData, this.canvas.renderAll.bind(this.canvas));
+      this.canvas.renderAll();
+      console.log(this.canvas);
+    }
+  }
+
+  setCursorPosition(left: number, top: number) {
+    const data = { left, top };
+    socketManager.emitCursorPosition(data);
+  }
+
+  updateCursorPosition(data: any) {
+    // Aktualizuj pozycje kursorów innych użytkowników
   }
 
   setSelectedObject(selectedObject: fabric.Object | null) {

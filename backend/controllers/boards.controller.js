@@ -1,7 +1,7 @@
 const Board = require("../models/board.model");
 const User = require("../models/user.model"); // Zaimportuj model User, jeśli potrzebujemy weryfikować właściciela
 const { addPrivilege, removePrivilegesByBoardId, getUserBoardsByPrivileges } = require('./privileges.controller'); // Import funkcji z privileges.controller
-const { getObjectsByBoardId, deleteObjectsByBoardId } = require('./objects.controller.js');
+const { getObjectsByBoardId, updateObjectsByBoardId, deleteObjectsByBoardId } = require('./objects.controller.js');
 const fabric = require('fabric').fabric;
 
 const getBoards = async (req, res) => {
@@ -145,11 +145,11 @@ const deleteBoard = async (req, res) => {
   }
 };
 
-const getBoardsObjects = async (req, res) => {
+const getBoardObjects = async (req, res) => {
   try {
-    const { id, userID } = req.query;
+    const { id: boardID, userID } = req.query;
 
-    if (!id) {
+    if (!boardID) {
       return res.status(400).json({ message: "Board ID must be provided" });
     }
     if (!userID) {
@@ -157,15 +157,26 @@ const getBoardsObjects = async (req, res) => {
     }
 
     const boards = await getUserBoardsByPrivileges(userID);
-    if (!boards.some(board => board._id.toString() === id)) {
-      addPrivilege(id, userID);
+    if (!boards.some(board => board._id.toString() === boardID)) {
+      addPrivilege(boardID, userID);
     }
 
-    const objects = await getObjectsByBoardId(id);
-    if (objects.length === 0) {
-      return res.status(404).json({ message: 'No objects found for this board' });
+    const board = await Board.findById(boardID).populate('owner');
+    if (!board) {
+      return res.status(404).json({ message: "Board not found" });
     }
-    res.status(200).json(objects);
+
+    const objects = await getObjectsByBoardId(boardID);
+    // if (objects.length === 0) {
+    //   return res.status(404).json({ message: 'No objects found for this board' });
+    // }
+
+    const response = {
+      board,
+      objects,
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: String(error) });
@@ -192,7 +203,6 @@ const generateDataUrl = async (board) => {
   const fabricCanvas = new fabric.StaticCanvas(null, { width: 400, height: 250 });
   try {
     const objects = await getObjectsByBoardId(board._id);
-    console.log(objects); // Dodane logowanie
 
     for (const object of objects) {
       const fabricObject = new fabric[object.type](object);
@@ -214,7 +224,7 @@ module.exports = {
   createBoard,
   updateBoard,
   deleteBoard,
-  getBoardsObjects,
+  getBoardObjects,
   generateDataUrl,
   deleteOwnerBoards
 };

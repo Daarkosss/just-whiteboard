@@ -112,25 +112,85 @@ const removePrivilegesByBoardId = async (boardId) => {
   }
 };
 
+
 const generateDataUrl = async (board) => {
-  const fabricCanvas = new fabric.StaticCanvas(null, { width: 400, height: 250 });
+  const fabricCanvas = new fabric.StaticCanvas(null, { width: 1920, height: 860 });
+
   try {
     const objects = await getObjectsByBoardId(board._id);
 
     for (const object of objects) {
-      const fabricObject = new fabric[object.type](object);
-      fabricCanvas.add(fabricObject);
+      let fabricObject;
+
+      switch (object.type) {
+        case 'rect':
+          fabricObject = new fabric.Rect({
+            left: object.left,
+            top: object.top,
+            width: object.width,
+            height: object.height,
+            fill: object.fill,
+            angle: object.angle,
+          });
+          break;
+        case 'circle':
+          fabricObject = new fabric.Circle({
+            left: object.left,
+            top: object.top,
+            radius: object.width / 2,
+            fill: object.fill,
+            angle: object.angle,
+          });
+          break;
+        case 'triangle':
+          fabricObject = new fabric.Triangle({
+            left: object.left,
+            top: object.top,
+            width: object.width,
+            height: object.height,
+            fill: object.fill,
+            angle: object.angle,
+          });
+          break;
+        case 'textbox':
+          fabricObject = new fabric.Textbox(object.text, {
+            left: object.left,
+            top: object.top,
+            fontSize: object.fontSize,
+            fill: object.fill,
+            textAlign: object.textAlign,
+            width: object.width,
+          });
+          break;
+        case 'text':
+          fabricObject = new fabric.Text(object.text, {
+            left: object.left,
+            top: object.top,
+            fontSize: object.fontSize,
+            fill: object.fill,
+            textAlign: object.textAlign,
+          });
+          break;
+        default:
+          console.warn(`Unsupported object type: ${object.type}`);
+          continue; // Pomijaj nieobsługiwane typy obiektów
+      }
+
+      if (fabricObject) {
+        fabricCanvas.add(fabricObject);
+      }
     }
 
     fabricCanvas.renderAll();
     const dataUrl = fabricCanvas.toDataURL();
+    console.log('Generated Data URL:', dataUrl);
 
     return dataUrl;
   } catch (error) {
+    console.error('Error generating data URL:', error);
     throw error;
   }
 };
-
 
 module.exports = {
   createPrivilege,

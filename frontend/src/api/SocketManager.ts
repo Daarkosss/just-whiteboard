@@ -1,62 +1,51 @@
+// src/socket/SocketManager.ts
 import { io, Socket } from "socket.io-client";
 import { SOCKET_BASE_URL } from "./api";
 import store from "../store/RootStore";
 
 class SocketManager {
-  private socket: Socket | null = null;
+  socket: Socket | null = null;
 
-  constructor() {
-    this.connect();
-  }
-
-  private connect(): void {
+  connect() {
     this.socket = io(SOCKET_BASE_URL, {
-      reconnection: false,
-      query: {
-        username: store.auth.user!.name,
-      },
+      transports: ['websocket'],
+      auth: {
+        token: store.auth.user?.userToken
+      }
     });
 
-    this.socket.on("connect", () => {
-      console.log("Connected to socket");
+    this.socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
     });
 
-    this.socket.on("typing", (receivedUsername: string, isTyping: boolean) => {
-      console.log('received typing', receivedUsername, isTyping);
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
     });
 
-    this.socket.on("read_message", (res: string) => {
-      console.log('received read message', res);
+    this.socket.on('canvas-change', (objects) => {
+      console.log('Received canvas change:', objects);
+      store.boards.currentBoard.updateCanvas(objects);
+    });
+
+    this.socket.on('cursor-position', (data) => {
+      // Obsługa otrzymanych pozycji kursorów
+      store.boards.currentBoard.updateCursorPosition(data);
     });
   }
 
-  public sendTypingSignal(isTyping: boolean): void {
-    console.log('sending typing', isTyping);
-    if (this.socket) {
-      this.socket.emit("typing", {
-        username: store.auth.user!.name,
-        isTyping: isTyping,
-      });
+  emitCanvasChange(data: any) {
+    if(data.boardId) {
+      this.socket?.emit('canvas-change', data);
     }
   }
 
-  public sendData(payload: { content: string }): void {
-    console.log('sending message to socket', payload);
-    if (this.socket) {
-      this.socket.emit("send_message", {
-        content: payload.content,
-        username: store.auth.user!.name,
-        messageType: "CLIENT",
-      });
-    }
+  emitCursorPosition(data: any) {
+    this.socket?.emit('cursor-position', data);
   }
 
-  public disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-      console.log("Disconnected from socket");
-    }
+  disconnect() {
+    this.socket?.disconnect();
   }
 }
 
-export default SocketManager;
+export default new SocketManager();
