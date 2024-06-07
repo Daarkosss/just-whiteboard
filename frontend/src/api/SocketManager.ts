@@ -34,6 +34,7 @@ class SocketManager {
   }
 
   emitCanvasChange(data: any) {
+    console.log('Emitting canvas change:', data);
     if(data.boardId) {
       this.socket?.emit('canvas-change', data);
     }

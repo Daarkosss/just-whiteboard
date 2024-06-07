@@ -6,8 +6,9 @@ import PropertiesPanel from '../components/PropertiesPanel';
 import WhiteboardCanvas from '../components/WhiteboardCanvas';
 import store from '../store/RootStore';
 import socketManager from "../api/SocketManager";
+import { observer } from 'mobx-react-lite';
 
-const Whiteboard: React.FC = () => {
+const Whiteboard: React.FC = observer(() => {
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -24,14 +25,14 @@ const Whiteboard: React.FC = () => {
 
   return (
     <div>
-      <WhiteboardCanvas />
       <div className="canvas-container">
         <WhiteboardHeader />
         <ButtonPanel />
         <PropertiesPanel />
       </div>
+      <WhiteboardCanvas />
     </div>
   );
-};
+});
 
 export default Whiteboard;

@@ -2,9 +2,15 @@ import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Canvas, CanvasInstance } from 'react-design-editor';
 import store from '../store/RootStore';
+import { MoonLoader } from 'react-spinners';
 
 const WhiteboardCanvas: React.FC = observer(() => {
   const canvasRef = useRef<CanvasInstance>(null);
+
+  const canvasStyle = {
+    zIndex: 1,
+    visibility: store.boards.isLoading ? 'hidden' : 'visible',
+  } as React.CSSProperties;
   
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
@@ -33,7 +39,12 @@ const WhiteboardCanvas: React.FC = observer(() => {
     }
   }, []);
 
-  return <Canvas ref={canvasRef} style={{ zIndex: 1 }} />;
+  return <div>
+    <Canvas ref={canvasRef} style={canvasStyle} />
+    {store.boards.isLoading && <div className="spinner-container">
+      <MoonLoader color="#0b5ed7" size={70} speedMultiplier={2}/>
+    </div>}
+  </div>;
 });
 
 export default WhiteboardCanvas;

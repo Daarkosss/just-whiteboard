@@ -4,7 +4,6 @@ import { fabric } from 'fabric';
 import { Handler } from 'react-design-editor';
 import { Board, BoardObject } from '../api/api';
 import socketManager from "../api/SocketManager";
-import { debounce } from 'lodash';
 
 class CurrentBoardStore {
   board: Board | null = null;
@@ -21,27 +20,39 @@ class CurrentBoardStore {
     makeAutoObservable(this);
   }
 
+  turnOnListeners() {
+    if (this.canvas) {
+      const events = [
+        'object:modified',
+        'selection:updated',
+        'object:removed',
+        'object:added',
+      ];
+      
+      events.forEach(event => {
+        this.canvas?.on(event, this.emitCanvasChange);
+      });
+    }
+  }
+
+  turnOffListeners() {
+    if (this.canvas) {
+      const events = [
+        'object:modified',
+        'selection:updated',
+        'object:removed',
+        'object:added',
+      ];
+      
+      events.forEach(event => {
+        this.canvas?.off(event, this.emitCanvasChange);
+      });
+    }
+  }
+
   setCanvas(canvas: fabric.Canvas) {
-    
-    const emitCanvasChange = debounce(() => {
-      this.emitCanvasChange();
-      console.log('Canvas change emitted');
-    }, 300); // Opóźnienie 300ms
-    
-    const events = [
-      'object:modified',
-      'selection:updated',
-      'object:moved',
-      'object:added',
-      'object:removed',
-      'object:scaling',
-      'object:rotated'
-    ];
-    
-    events.forEach(event => {
-      canvas.on(event, emitCanvasChange);
-    });
     this.canvas = canvas;
+    this.turnOnListeners();
   }
 
   setBoard(board: Board | null) {
@@ -52,7 +63,8 @@ class CurrentBoardStore {
     this.handler = handler;
   }
 
-  emitCanvasChange() {
+  emitCanvasChange = () => {
+    console.log(this.canvas);
     if (this.canvas) {
       const objects = this.canvas.getObjects().map(obj => obj.toJSON());
       const data = { boardId: this.board?._id, objects };
@@ -68,12 +80,15 @@ class CurrentBoardStore {
   }
 
   updateCanvas(data: BoardObject[]) {
+    this.turnOffListeners();
+    console.log(this.canvas)
     if (this.canvas) {
       const fabricData = this.convertToFabricFormat(data);
       this.canvas.loadFromJSON(fabricData, this.canvas.renderAll.bind(this.canvas));
       this.canvas.renderAll();
       console.log(this.canvas);
     }
+    this.turnOnListeners();
   }
 
   setCursorPosition(left: number, top: number) {
@@ -117,6 +132,7 @@ class CurrentBoardStore {
     if (this.selectedObject) {
       this.selectedObject.set('fill', color);
       this.canvas?.renderAll();
+      this.canvas?.fire('object:modified', { target: this.selectedObject });
     }
   }
 

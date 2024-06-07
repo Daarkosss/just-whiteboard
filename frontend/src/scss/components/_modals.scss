@@ -1,10 +1,29 @@
-.edit-icon {
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
+.action-buttons {
+  display: flex;
+  gap: 20px;
 
-.edit-icon:hover {
-  color: $dark-blue;
+  .icon {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .edit-icon {
+    @extend .icon;
+    color: $dark-blue;
+  }
+
+  .delete-icon {
+    @extend .icon;
+    color: darkred;
+  }
+  
+  .edit-icon:hover {
+    color: $light-blue;
+  }
+
+  .delete-icon:hover {
+    color: lightcoral;
+  }
 }
 
 .home-container {

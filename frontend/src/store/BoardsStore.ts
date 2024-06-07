@@ -33,22 +33,6 @@ class BoardsStore {
     }
   }
 
-  async fetchBoardObjects(id: string) {
-    this.isLoading = true;
-    try {
-      const boardObjects = await api.getBoardsObjects(id);
-      this.currentBoard.canvas?.loadFromJSON(boardObjects, () => {
-        this.currentBoard.canvas?.renderAll();
-      });
-      console.log(this.currentBoard?.canvas?._objects);
-    } catch (err: unknown) {
-      const error = err as Error;
-      console.error(error.message);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
   async createBoard(name: string) {
     this.isLoading = true;
     try {
