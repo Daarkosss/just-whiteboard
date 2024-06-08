@@ -195,6 +195,18 @@ class CurrentBoardStore {
       console.error("Selected object is null");
     }
   }
+
+  reset() {
+    this.turnOffListeners();
+    this.board = null;
+    this.canvas = null;
+    this.selectedObject = null;
+    this.color = '#000000';
+    this.fontSize = '';
+    this.fontFamily = '';
+    this.width = '';
+    this.height = '';
+  }
 }
 
 export default CurrentBoardStore;

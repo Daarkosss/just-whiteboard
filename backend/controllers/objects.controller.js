@@ -81,6 +81,7 @@ const updateObjectsByBoardId = async (boardId, objects) => {
   try {
     await ObjectModel.deleteMany({ boardId });
     const newObjects = objects.map(object => ({ ...object, boardId }));
+    console.log(newObjects.length);
     await ObjectModel.insertMany(newObjects);
   } catch (error) {
     console.log(error);

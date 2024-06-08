@@ -19,6 +19,7 @@ const Whiteboard: React.FC = observer(() => {
     }
 
     return () => {
+      store.boards.currentBoard.turnOffListeners();
       socketManager.disconnect();
     };
   }, [id])

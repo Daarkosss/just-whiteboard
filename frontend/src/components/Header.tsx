@@ -45,6 +45,7 @@ export const WhiteboardHeader: React.FC = observer(() => {
   const navigate = useNavigate();
 
   const handleLeave = () => {
+    store.boards.currentBoard.reset();
     navigate('/');
   };
 

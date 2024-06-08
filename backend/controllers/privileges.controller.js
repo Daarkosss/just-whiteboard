@@ -20,8 +20,6 @@ const addPrivilege = async (boardId, userId) => {
 
 const getUserBoardsByPrivileges = async (userId) => {
   try {
-    console.log(userId);
-    console.log({ userId });
     const privileges = await Privilege.find({ userId }).populate('boardId');
     const boards = privileges.map(priv => priv.boardId);
     const boardsWithDataUrl = await Promise.all(
@@ -30,7 +28,6 @@ const getUserBoardsByPrivileges = async (userId) => {
         return { ...board.toObject(), dataUrl };
       })
     );
-    console.log(boardsWithDataUrl);
     return boardsWithDataUrl;
   } catch (error) {
     // console.error("Error in getUserBoardsByPrivileges:", error);
@@ -114,7 +111,7 @@ const removePrivilegesByBoardId = async (boardId) => {
 
 
 const generateDataUrl = async (board) => {
-  const fabricCanvas = new fabric.StaticCanvas(null, { width: 1920, height: 860 });
+  const fabricCanvas = new fabric.StaticCanvas(null, { width: 1920, height: 1080 });
 
   try {
     const objects = await getObjectsByBoardId(board._id);

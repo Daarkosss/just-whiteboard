@@ -1,7 +1,12 @@
 // src/socket/SocketManager.ts
 import { io, Socket } from "socket.io-client";
-import { SOCKET_BASE_URL } from "./api";
+import { BoardObject, SOCKET_BASE_URL } from "./api";
 import store from "../store/RootStore";
+
+export type BoardIdWithObjects = {
+  boardId: string;
+  objects: BoardObject[];
+}
 
 class SocketManager {
   socket: Socket | null = null;
@@ -33,16 +38,16 @@ class SocketManager {
     });
   }
 
-  emitCanvasChange(data: any) {
+  emitCanvasChange(data: BoardIdWithObjects) {
     console.log('Emitting canvas change:', data);
     if(data.boardId) {
       this.socket?.emit('canvas-change', data);
     }
   }
 
-  emitCursorPosition(data: any) {
-    this.socket?.emit('cursor-position', data);
-  }
+  // emitCursorPosition(data: any) {
+  //   this.socket?.emit('cursor-position', data);
+  // }
 
   disconnect() {
     this.socket?.disconnect();
