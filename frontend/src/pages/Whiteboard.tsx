@@ -15,14 +15,15 @@ const Whiteboard: React.FC = observer(() => {
     console.log("Whiteboard ID:", id);
     if (id) {
       store.boards.fetchBoard(id);
-      socketManager.connect();
+      socketManager.connect(id);
     }
 
     return () => {
-      store.boards.currentBoard.turnOffListeners();
-      socketManager.disconnect();
+      if (id) {
+        socketManager.disconnect(id);
+      }
     };
-  }, [id])
+  }, [id]);
 
   return (
     <div>

@@ -35,7 +35,7 @@ const ButtonPanel: React.FC = observer(() => {
         height: 100,
         left: 850,
         top: 400,
-        fill: 'rgba(0, 0, 255, 0.2)',
+        fill: 'rgba(0, 0, 255)',
       });
       canvas.add(triangle);
       canvas.setActiveObject(triangle);
@@ -50,7 +50,7 @@ const ButtonPanel: React.FC = observer(() => {
         radius: 50,
         left: 850,
         top: 400,
-        fill: 'rgba(0, 255, 0, 0.2)',
+        fill: 'rgba(0, 255, 0)',
       });
       canvas.add(circle);
       canvas.setActiveObject(circle);
@@ -64,7 +64,7 @@ const ButtonPanel: React.FC = observer(() => {
       const text = new fabric.Textbox('text', {
         left: 850,
         top: 400,
-        fill: 'rgba(255, 0, 0, 0.7)',
+        fill: 'rgba(255, 0, 0)',
       });
       canvas.add(text);
       canvas.setActiveObject(text);

@@ -27,22 +27,30 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
+  socket.on('joinBoard', (boardId) => {
+    socket.join(boardId);
+    console.log(`User joined board: ${boardId}`);
+  });
+
+  socket.on('leaveBoard', (boardId) => {
+    socket.leave(boardId);
+    console.log(`User left board: ${boardId}`);
+  });
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
-  // Przykład nasłuchiwania zdarzenia 'canvas-change'
   socket.on('canvas-change', async (data) => {
     const { boardId, objects } = data;
     await updateObjectsByBoardId(boardId, objects);
-    console.log('Canvas changed');
-    socket.broadcast.emit('canvas-change', objects);
+    console.log(`Canvas changed on board: ${boardId}`);
+    socket.to(boardId).emit('canvas-change', data); // Emit to others in the room
   });
 
-  // Przykład nasłuchiwania zdarzenia 'cursor-position'
   socket.on('cursor-position', (data) => {
-    // Emituj zdarzenie do wszystkich połączonych klientów
-    socket.broadcast.emit('cursor-position', data);
+    const { boardId, position } = data;
+    socket.to(boardId).emit('cursor-position', position); // Emit to others in the room
   });
 });
 
@@ -51,7 +59,7 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(() => {
   server.listen(port, () => {
     console.log("Server is running on port " + port);
   });
-})
+});
 
 server.on('error', onError);
 server.on('listening', onListening);
@@ -81,7 +89,6 @@ function onError(error) {
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');

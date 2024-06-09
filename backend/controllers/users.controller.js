@@ -163,7 +163,7 @@ const loginUser = async (req, res) => {
   try {
     // Logika związana z weryfikacją tokena
     const userData = req.user;
-    console.log(userData);
+    // console.log(userData);
     if (!userData) {
       throw new Error('User data not found');
     }

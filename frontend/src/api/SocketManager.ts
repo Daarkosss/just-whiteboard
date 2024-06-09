@@ -1,6 +1,6 @@
 // src/socket/SocketManager.ts
 import { io, Socket } from "socket.io-client";
-import { BoardObject, SOCKET_BASE_URL } from "./api";
+import { BoardObject, SOCKET_BASE_URL } from "../api/api";
 import store from "../store/RootStore";
 
 export type BoardIdWithObjects = {
@@ -10,8 +10,11 @@ export type BoardIdWithObjects = {
 
 class SocketManager {
   socket: Socket | null = null;
+  boardId: string | null = null;
 
-  connect() {
+  connect(boardId: string) {
+    this.boardId = boardId;
+
     this.socket = io(SOCKET_BASE_URL, {
       transports: ['websocket'],
       auth: {
@@ -21,26 +24,28 @@ class SocketManager {
 
     this.socket.on('connect', () => {
       console.log('Connected to WebSocket server');
+      this.socket?.emit('joinBoard', this.boardId);
     });
 
     this.socket.on('disconnect', () => {
       console.log('Disconnected from WebSocket server');
     });
 
-    this.socket.on('canvas-change', (objects) => {
-      console.log('Received canvas change:', objects);
-      store.boards.currentBoard.updateCanvas(objects);
+    this.socket.on('canvas-change', (data) => {
+      if (data.boardId === this.boardId) {
+        console.log('Received canvas change:', data);
+        store.boards.currentBoard.updateCanvas(data.objects);
+      }
     });
 
     this.socket.on('cursor-position', (data) => {
-      // Obsługa otrzymanych pozycji kursorów
       store.boards.currentBoard.updateCursorPosition(data);
     });
   }
 
   emitCanvasChange(data: BoardIdWithObjects) {
     console.log('Emitting canvas change:', data);
-    if(data.boardId) {
+    if (data.boardId) {
       this.socket?.emit('canvas-change', data);
     }
   }
@@ -49,8 +54,11 @@ class SocketManager {
   //   this.socket?.emit('cursor-position', data);
   // }
 
-  disconnect() {
-    this.socket?.disconnect();
+  disconnect(boardId: string) {
+    if (this.socket) {
+      this.socket.emit('leaveBoard', boardId);
+      this.socket.disconnect();
+    }
   }
 }
 

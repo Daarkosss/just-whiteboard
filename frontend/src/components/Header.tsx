@@ -31,7 +31,7 @@ export const HomeHeader: React.FC = observer(() => {
   return (
     <div className="sticky-header">
       <div className="avatar-container">
-        {<img src={store.auth.user?.avatar} alt="avatar" className="avatar" />}
+        <img src={store.auth.user?.avatar} alt="avatar" className="avatar" />
         <div>{store.auth.user?.name}</div>
       </div>
       <h1 className='title'>{t('availableWhiteboards')}</h1>
