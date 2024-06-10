@@ -30,7 +30,6 @@ const getUser = async (req, res) => {
   }
 };
 
-// This is need in scenario when we want to create a new user
 const getUserBySSOID = async (req, res) => {
     try {
       const { ssoId } = req.query;
@@ -46,8 +45,6 @@ const getUserBySSOID = async (req, res) => {
     }
 };
 
-// TODO: Tworzenie nowego użytkownika przy logowaniu. 
-// Ale to po ogarnięciu usuwaniu boardów i privileges przy usuwaniu użytkownika
 const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
@@ -62,17 +59,15 @@ const findOrCreateUser = async (userData) => {
   try {
     const { sub: ssoID, name, email, picture } = userData;
 
-    // Sprawdzenie czy użytkownik już istnieje
     let user = await User.findOne({ ssoID });
 
     if (!user) {
-      // Jeśli użytkownik nie istnieje, stwórz nowego
       user = new User({
         ssoID,
         name,
         email,
         picture,
-        mouseLeft: 0,  // Domyślne wartości
+        mouseLeft: 0,
         mouseTop: 0
       });
       await user.save();
@@ -80,7 +75,7 @@ const findOrCreateUser = async (userData) => {
     
     return user;
   } catch (error) {
-    throw error;  // Rzucenie błędu do obsługi w funkcji wywołującej
+    throw error;
   }
 };
 
@@ -115,7 +110,6 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    //TODO: Usuń wszystkie tablice przypisane do użytkownika
     await deleteOwnerBoards(id);
 
     res.status(200).json({ message: "User and associated boards deleted successfully" });
@@ -139,9 +133,9 @@ const getUsersBoards = async (req, res) => {
     // Znajdowanie tablic, do których użytkownik ma dostęp poprzez uprawnienia
     const boards = await getUserBoardsByPrivileges(userID);
 
-    if (boards.length === 0) {
-      return res.status(404).json({ message: "No boards found for this user" });
-    }
+    // if (boards.length === 0) {
+    //   return res.status(404).json({ message: "No boards found for this user" });
+    // }
 
     res.status(200).json(boards);
   } catch (error) {
@@ -156,9 +150,9 @@ const getUsersBoards = async (req, res) => {
 const loginUser = async (req, res) => {
   const authHeader = req.headers.authorization;
   const accessToken = authHeader && authHeader.split(' ')[1];
-  console.log("JWT token: ")
-  console.log(accessToken);
-  console.log("...JWT token")
+  // console.log("JWT token: ")
+  // console.log(accessToken);
+  // console.log("...JWT token")
 
   try {
     // Logika związana z weryfikacją tokena

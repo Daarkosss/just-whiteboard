@@ -30,12 +30,10 @@ const getUserBoardsByPrivileges = async (userId) => {
     );
     return boardsWithDataUrl;
   } catch (error) {
-    // console.error("Error in getUserBoardsByPrivileges:", error);
-    throw error;  // Rzucenie błędu pozwoli wywołującemu obsłużyć go odpowiednio
+    throw error;
   }
 };
 
-// Create Privilege
 const createPrivilege = async (req, res) => {
 
   try {
@@ -70,7 +68,6 @@ const createPrivilege = async (req, res) => {
   }
 };
 
-// Read all Privileges
 const getAllPrivileges = async (req, res) => {
   try {
     const privileges = await Privilege.find().populate('boardId').populate('userId');
@@ -124,6 +121,8 @@ const generateDataUrl = async (board) => {
           fabricObject = new fabric.Rect({
             left: object.left,
             top: object.top,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
             width: object.width,
             height: object.height,
             fill: object.fill,
@@ -134,6 +133,8 @@ const generateDataUrl = async (board) => {
           fabricObject = new fabric.Circle({
             left: object.left,
             top: object.top,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
             radius: object.width / 2,
             fill: object.fill,
             angle: object.angle,
@@ -143,6 +144,8 @@ const generateDataUrl = async (board) => {
           fabricObject = new fabric.Triangle({
             left: object.left,
             top: object.top,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
             width: object.width,
             height: object.height,
             fill: object.fill,
@@ -153,24 +156,30 @@ const generateDataUrl = async (board) => {
           fabricObject = new fabric.Textbox(object.text, {
             left: object.left,
             top: object.top,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
             fontSize: object.fontSize,
             fill: object.fill,
             textAlign: object.textAlign,
             width: object.width,
+            angle: object.angle,
           });
           break;
         case 'text':
           fabricObject = new fabric.Text(object.text, {
             left: object.left,
             top: object.top,
+            scaleX: object.scaleX,
+            scaleY: object.scaleY,
             fontSize: object.fontSize,
             fill: object.fill,
             textAlign: object.textAlign,
+            angle: object.angle,
           });
           break;
         default:
           console.warn(`Unsupported object type: ${object.type}`);
-          continue; // Pomijaj nieobsługiwane typy obiektów
+          continue;
       }
 
       if (fabricObject) {
@@ -180,7 +189,6 @@ const generateDataUrl = async (board) => {
 
     fabricCanvas.renderAll();
     const dataUrl = fabricCanvas.toDataURL();
-    console.log('Generated Data URL:', dataUrl);
 
     return dataUrl;
   } catch (error) {

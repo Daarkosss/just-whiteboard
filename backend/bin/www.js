@@ -45,12 +45,12 @@ io.on('connection', (socket) => {
     const { boardId, objects } = data;
     await updateObjectsByBoardId(boardId, objects);
     console.log(`Canvas changed on board: ${boardId}`);
-    socket.to(boardId).emit('canvas-change', data); // Emit to others in the room
+    socket.to(boardId).emit('canvas-change', data);
   });
 
   socket.on('cursor-position', (data) => {
     const { boardId, position } = data;
-    socket.to(boardId).emit('cursor-position', position); // Emit to others in the room
+    socket.to(boardId).emit('cursor-position', position);
   });
 });
 

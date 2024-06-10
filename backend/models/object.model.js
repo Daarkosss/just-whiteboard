@@ -30,10 +30,15 @@ const ObjectSchema = mongoose.Schema({
     required: true,
     default: 0
   },
-  height: {
+  scaleX: {
     type: Number,
     required: true,
-    default: 0
+    default: 1
+  },
+  scaleY: {
+    type: Number,
+    required: true,
+    default: 1
   },
   angle: {
     type: Number,
