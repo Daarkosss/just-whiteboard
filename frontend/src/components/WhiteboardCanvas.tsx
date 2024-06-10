@@ -33,8 +33,9 @@ const WhiteboardCanvas: React.FC = observer(() => {
       const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
         const e = event.e as MouseEvent;
         const pointer = canvas.getPointer(e);
-        console.log('Cursor position:', pointer);
-        console.log('Current user', store.auth.user?._id);
+        console.log('Cursor position:', pointer.x, pointer.y);
+        store.boards.currentBoard.setCursorPosition(pointer.x, pointer.y);
+        // console.log('Current user', store.auth.user?._id);
       };
 
       canvas.on('mouse:move', handleMouseMove);

@@ -55,7 +55,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('cursor-position', (data) => {
-    const { boardId, position } = data;
+    const {boardId, userId, userPhoto ,mouseLeft, mouseTop} = data;
+    const position = {userId, userPhoto, mouseLeft, mouseTop};
     socket.to(boardId).emit('cursor-position', position);
   });
 });

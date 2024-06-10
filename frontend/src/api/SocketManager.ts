@@ -51,6 +51,11 @@ class SocketManager {
   }
 
   emitCursorPosition(data: any) {
+    const { boardId, mouseLeft, mouseTop } = data;
+    if (boardId !== this.boardId) {
+      return;
+    }
+    data = {boardId: boardId, userId: store.auth.user?._id, userPhoto: store.auth.user?.avatar ,mouseLeft: mouseLeft, mouseTop: mouseTop};
     this.socket?.emit('cursor-position', data);
   }
 

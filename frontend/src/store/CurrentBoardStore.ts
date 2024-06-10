@@ -16,6 +16,7 @@ class CurrentBoardStore {
   width: number | '' = '';
   height: number | '' = '';
 
+  
   constructor() {
     makeAutoObservable(this);
   }
@@ -64,11 +65,11 @@ class CurrentBoardStore {
   }
 
   emitCanvasChange = () => {
-    console.log(this.canvas);
+    // console.log(this.canvas);
     if (this.canvas) {
       const objects = this.canvas.getObjects().map(obj => obj.toJSON());
       const data = { boardId: this.board?._id, objects };
-      console.log(data);
+      // console.log(data);
       socketManager.emitCanvasChange(data);
     }
   }
@@ -97,12 +98,13 @@ class CurrentBoardStore {
     this.turnOnListeners();
   }
 
-  setCursorPosition(left: number, top: number) {
-    const data = { left, top };
+  setCursorPosition(mouseLeft: number, mouseTop: number) {
+    const data = { boardId: this.board?._id, mouseLeft, mouseTop};
     socketManager.emitCursorPosition(data);
   }
 
   updateCursorPosition(data: any) {
+    console.log(data)
     // Aktualizuj pozycje kursorów innych użytkowników
   }
 
