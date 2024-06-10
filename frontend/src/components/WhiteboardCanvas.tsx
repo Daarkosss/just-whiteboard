@@ -19,6 +19,7 @@ const WhiteboardCanvas: React.FC = observer(() => {
     if (canvas) {
       store.boards.currentBoard.setCanvas(canvas);
       store.boards.currentBoard.setHandler(canvasRef.current?.handler);
+      console.log(canvasRef.current?.handler);
 
       const handleSelection = () => {
         const activeObject = canvas.getActiveObject() as fabric.Object | null;

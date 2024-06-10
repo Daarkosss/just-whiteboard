@@ -1,7 +1,8 @@
 // src/components/PropertiesPanel.tsx
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, ButtonGroup } from 'react-bootstrap';
+import { FaAngleDown, FaAngleDoubleDown, FaAngleUp, FaAngleDoubleUp } from "react-icons/fa";
 import { SketchPicker } from 'react-color';
 import { useTranslation } from 'react-i18next';
 import store from '../store/RootStore';
@@ -64,6 +65,23 @@ const PropertiesPanel: React.FC = observer(() => {
               </Form.Group>
             </Form>
           )}
+          <Form.Group controlId="formObjectLayer" className='form-group-layer'>
+            <Form.Label>{t('layer')}</Form.Label>
+            <ButtonGroup className="layer-buttons">
+              <Button className="button" onClick={() => store.boards.currentBoard.bringForward()}>
+                <FaAngleUp size={20} />
+              </Button>
+              <Button className="button" onClick={() =>store.boards.currentBoard.sendBackwards()}>
+                <FaAngleDown size={20} />
+              </Button>
+              <Button className="button" onClick={() => store.boards.currentBoard.bringToFront()}>
+                <FaAngleDoubleUp size={20} />
+              </Button>
+              <Button className="button" onClick={() => store.boards.currentBoard.sendToBack()}>
+                <FaAngleDoubleDown size={20} />
+              </Button>
+            </ButtonGroup>
+          </Form.Group>
           <Form.Group controlId="formObjectColor">
             <Form.Label>{t('color')}</Form.Label>
             <SketchPicker color={store.boards.currentBoard.color} onChange={handleColorChange} />

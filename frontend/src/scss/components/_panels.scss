@@ -21,6 +21,23 @@
   margin-top: 15px;
 }
 
+.form-group-layer {
+  @extend .form-group;
+
+  width: 100%;
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  justify-content: center;
+
+  .layer-buttons {
+
+    .button {
+      border: 1px solid #ffffff;
+    }
+  }
+}
+
 .login-panel {
   width: 400px;
   height: 300px;

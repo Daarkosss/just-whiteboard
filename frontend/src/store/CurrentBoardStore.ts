@@ -67,11 +67,9 @@ class CurrentBoardStore {
   }
 
   emitCanvasChange = () => {
-    // console.log(this.canvas);
     if (this.canvas) {
       const objects = this.canvas.getObjects().map(obj => obj.toJSON());
       const data = { boardId: this.board?._id, objects };
-      // console.log(data);
       socketManager.emitCanvasChange(data);
     }
   }
@@ -86,6 +84,26 @@ class CurrentBoardStore {
         return object;
       }),
     };
+  }
+
+  bringForward() {
+    this.handler?.bringForward();
+    this.emitCanvasChange()
+  }
+
+  bringToFront() {
+    this.handler?.bringToFront();
+    this.emitCanvasChange()
+  }
+
+  sendBackwards() {
+    this.handler?.sendBackwards();
+    this.emitCanvasChange()
+  }
+
+  sendToBack() {
+    this.handler?.sendToBack();
+    this.emitCanvasChange()
   }
 
   updateCanvas(data: BoardObject[]) {
@@ -145,6 +163,7 @@ class CurrentBoardStore {
       this.height = '';
     }
   }
+
 
   setColor(color: string) {
     console.log("Selected object:", this.selectedObject);

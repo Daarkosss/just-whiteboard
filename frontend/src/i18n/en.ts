@@ -24,6 +24,7 @@ const translations = {
     width: "Width",
     height: "Height",
     color: "Color",
+    layer: "Layer",
 
     removeObject: "Remove object",
     leave: "Leave",
