@@ -39,6 +39,10 @@ class SocketManager {
     });
 
     this.socket.on('cursor-position', (data) => {
+      const userId = store.auth.user?._id;
+      if (data.userId === userId) {
+        return;
+      }
       store.boards.currentBoard.updateCursorPosition(data);
     });
   }

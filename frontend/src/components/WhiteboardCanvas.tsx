@@ -35,7 +35,6 @@ const WhiteboardCanvas: React.FC = observer(() => {
         const pointer = canvas.getPointer(e);
         console.log('Cursor position:', pointer.x, pointer.y);
         store.boards.currentBoard.setCursorPosition(pointer.x, pointer.y);
-        // console.log('Current user', store.auth.user?._id);
       };
 
       canvas.on('mouse:move', handleMouseMove);
@@ -52,9 +51,49 @@ const WhiteboardCanvas: React.FC = observer(() => {
     }
   }, []);
 
+  const userPositions = store.boards.currentBoard.getUserPositions();
+  const canvas = canvasRef.current?.handler.canvas;
+  const canvasWidth = canvas?.getWidth() || 0;
+  const canvasHeight = canvas?.getHeight() || 0;
+
+  const getTransformedPosition = (left: number, top: number) => {
+    if (!canvas) return { left, top };
+    const zoom = canvas.getZoom();
+    const vpt = canvas.viewportTransform;
+    if (!vpt) return { left, top };
+    const x = (left * zoom) + vpt[4];
+    const y = (top * zoom) + vpt[5];
+    return { left: x, top: y };
+  };
+
+
   return (
     <div>
       <Canvas ref={canvasRef} style={canvasStyle} />
+      {Object.keys(userPositions).map(userId => {
+        const { userPhoto, mouseLeft, mouseTop } = userPositions[userId];
+        const { left, top } = getTransformedPosition(mouseLeft, mouseTop);
+        if (left < 0 || top < 0 || left > canvasWidth -10 || top > canvasHeight -10) {
+          return null;
+        }
+        return (
+          <img
+            key={userId}
+            src={userPhoto}
+            alt={`cursor-${userId}`}
+            style={{
+              position: 'absolute',
+              left: left,
+              top: top,
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 2,
+            }}
+          />
+        );
+      })}
       {store.boards.isLoading && (
         <div className="spinner-container">
           <MoonLoader color="#0b5ed7" size={70} speedMultiplier={2} />

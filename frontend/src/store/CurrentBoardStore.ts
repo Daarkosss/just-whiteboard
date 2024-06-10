@@ -15,8 +15,10 @@ class CurrentBoardStore {
   fontFamily = '';
   width: number | '' = '';
   height: number | '' = '';
+  userStore: { [userId: string]: { userPhoto: string, mouseLeft: number, mouseTop: number } } = {};
 
-  
+
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -104,8 +106,18 @@ class CurrentBoardStore {
   }
 
   updateCursorPosition(data: any) {
-    console.log(data)
-    // Aktualizuj pozycje kursorów innych użytkowników
+    const { userId, userPhoto, mouseLeft, mouseTop } = data;
+    if (this.userStore[userId]) {
+      this.userStore[userId].mouseLeft = mouseLeft;
+      this.userStore[userId].mouseTop = mouseTop;
+    } else {
+      this.userStore[userId] = { userPhoto, mouseLeft, mouseTop };
+    }
+    // console.log(this.userStore)
+  }
+
+  getUserPositions() {
+    return this.userStore;
   }
 
   setSelectedObject(selectedObject: fabric.Object | null) {
@@ -208,6 +220,7 @@ class CurrentBoardStore {
     this.fontFamily = '';
     this.width = '';
     this.height = '';
+    this.userStore = {};
   }
 }
 

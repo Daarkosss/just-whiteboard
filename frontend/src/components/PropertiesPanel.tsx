@@ -17,7 +17,7 @@ const PropertiesPanel: React.FC = observer(() => {
   return (
     <div>
       {store.boards.currentBoard.selectedObject &&
-        <div className="properties-panel">
+        <div className="properties-panel" style={{zIndex: 3}}>
           {store.boards.currentBoard.selectedObject.type === 'textbox' ? (
             <Form>
               <Form.Group controlId="formFontSize" className='form-group'>

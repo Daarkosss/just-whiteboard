@@ -73,6 +73,7 @@ const ButtonPanel: React.FC = observer(() => {
   };
 
   return (
+    <div className="button-panel" style={{zIndex: 3}}>
     <ButtonGroup vertical className="buttons-container">
       <Button className="button" onClick={addRectangle}>
         <FaSquare /> {t('addRectangle')}
@@ -87,6 +88,7 @@ const ButtonPanel: React.FC = observer(() => {
         <RiFontSize2 /> {t('addText')}
       </Button>
     </ButtonGroup>
+    </div>
   );
 });
 
