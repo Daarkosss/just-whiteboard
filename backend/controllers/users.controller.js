@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Board = require("../models/board.model");
 const {getUserBoardsByPrivileges } = require('./privileges.controller'); 
 const {deleteOwnerBoards} = require('./boards.controller.js');
 const getUsers = async (req, res) => {
@@ -170,6 +171,46 @@ const loginUser = async (req, res) => {
   }
 };
 
+const joinBoard = async (boardId, userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const board = await Board.findById(boardId);
+    if (!board) {
+      throw new Error('Board not found');
+    }
+    
+    user.actualBoard = boardId;
+    await user.save();
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+const leaveBoard = async (boardId, userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const board = await Board.findById(boardId);
+    if (!board) {
+      throw new Error('Board not found');
+    }
+    
+    user.actualBoard = null;
+    await user.save();
+
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
@@ -179,5 +220,7 @@ module.exports = {
   getUserBySSOID,
   findOrCreateUser,
   getUsersBoards,
-  loginUser
+  loginUser,
+  joinBoard,
+  leaveBoard
 };

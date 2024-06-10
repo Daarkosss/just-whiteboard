@@ -6,6 +6,10 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const { Server } = require("socket.io");
 const { updateObjectsByBoardId } = require("../controllers/objects.controller.js");
+const {
+  joinBoard,
+  leaveBoard,
+} = require('../controllers/users.controller.js');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
@@ -27,14 +31,16 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-  socket.on('joinBoard', (boardId) => {
+  socket.on('joinBoard', (boardId, userId) => {
     socket.join(boardId);
-    console.log(`User joined board: ${boardId}`);
+    joinBoard(boardId, userId);
+    console.log(`User ${userId} joined board: ${boardId}`);
   });
 
-  socket.on('leaveBoard', (boardId) => {
+  socket.on('leaveBoard', (boardId, userId) => {
     socket.leave(boardId);
-    console.log(`User left board: ${boardId}`);
+    leaveBoard(boardId, userId);
+    console.log(`User ${userId} left board: ${boardId}`);
   });
 
   socket.on('disconnect', () => {

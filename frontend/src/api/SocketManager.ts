@@ -24,7 +24,7 @@ class SocketManager {
 
     this.socket.on('connect', () => {
       console.log('Connected to WebSocket server');
-      this.socket?.emit('joinBoard', this.boardId);
+      this.socket?.emit('joinBoard', this.boardId, store.auth.user?._id);
     });
 
     this.socket.on('disconnect', () => {
@@ -43,20 +43,20 @@ class SocketManager {
     });
   }
 
-  emitCanvasChange(data: BoardIdWithObjects) {
+  emitCanvasChange(data: any) {
     console.log('Emitting canvas change:', data);
     if (data.boardId) {
       this.socket?.emit('canvas-change', data);
     }
   }
 
-  // emitCursorPosition(data: any) {
-  //   this.socket?.emit('cursor-position', data);
-  // }
+  emitCursorPosition(data: any) {
+    this.socket?.emit('cursor-position', data);
+  }
 
   disconnect(boardId: string) {
     if (this.socket) {
-      this.socket.emit('leaveBoard', boardId);
+      this.socket.emit('leaveBoard', boardId, store.auth.user?._id);
       this.socket.disconnect();
     }
   }
