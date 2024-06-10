@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Canvas, CanvasInstance } from 'react-design-editor';
 import store from '../store/RootStore';
@@ -7,11 +7,28 @@ import { fabric } from 'fabric';
 
 const WhiteboardCanvas: React.FC = observer(() => {
   const canvasRef = useRef<CanvasInstance>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
 
   const canvasStyle = {
     zIndex: 1,
     visibility: store.boards.isLoading ? 'hidden' : 'visible',
   } as React.CSSProperties;
+
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current?.handler.canvas;
+      if (canvas) {
+        setCanvasSize({ width: canvas.getWidth(), height: canvas.getHeight() });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial size calculation
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
