@@ -59,7 +59,7 @@ class SocketManager {
     if (boardId !== this.boardId) {
       return;
     }
-    data = {boardId: boardId, userId: store.auth.user?._id, userPhoto: store.auth.user?.avatar ,mouseLeft: mouseLeft, mouseTop: mouseTop};
+    data = {boardId: boardId, userId: store.auth.user?._id, userPhoto: store.auth.user?.avatar, mouseLeft: mouseLeft, mouseTop: mouseTop};
     this.socket?.emit('cursor-position', data);
   }
 

@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import { fabric } from 'fabric';
 import { Handler } from 'react-design-editor';
 import { Board, BoardObject } from '../api/api';
+import store from './RootStore';
 import socketManager from "../api/SocketManager";
 
 class CurrentBoardStore {
@@ -17,8 +18,6 @@ class CurrentBoardStore {
   height: number | '' = '';
   userStore: { [userId: string]: { userPhoto: string, mouseLeft: number, mouseTop: number } } = {};
 
-
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -27,7 +26,6 @@ class CurrentBoardStore {
     if (this.canvas) {
       const events = [
         'object:modified',
-        'selection:updated',
         'object:removed',
         'object:added',
       ];
@@ -35,6 +33,8 @@ class CurrentBoardStore {
       events.forEach(event => {
         this.canvas?.on(event, this.emitCanvasChange);
       });
+
+      this.canvas?.on('object:moving', this.checkPosition);
     }
   }
 
@@ -42,7 +42,6 @@ class CurrentBoardStore {
     if (this.canvas) {
       const events = [
         'object:modified',
-        'selection:updated',
         'object:removed',
         'object:added',
       ];
@@ -50,9 +49,21 @@ class CurrentBoardStore {
       events.forEach(event => {
         this.canvas?.off(event, this.emitCanvasChange);
       });
+      this.canvas?.off('object:moving', this.checkPosition);
     }
   }
 
+checkPosition(event: fabric.IEvent) {
+  const target = event.target;
+  if (target && '_objects' in target) {
+    console.log("Group position:", target.left, target.top);
+    target._objects.forEach((obj: fabric.Object) => {
+      console.log("Object in group position:", obj.left, obj.top);
+    });
+  } else if (target) {
+    console.log("Single object position:", target.left, target.top);
+  }
+}
   setCanvas(canvas: fabric.Canvas) {
     this.canvas = canvas;
     this.turnOnListeners();
@@ -67,7 +78,7 @@ class CurrentBoardStore {
   }
 
   emitCanvasChange = () => {
-    if (this.canvas) {
+    if (!store.boards.isLoading && this.canvas) {
       const objects = this.canvas.getObjects().map(obj => obj.toJSON());
       const data = { boardId: this.board?._id, objects };
       socketManager.emitCanvasChange(data);
@@ -87,22 +98,32 @@ class CurrentBoardStore {
   }
 
   bringForward() {
-    this.handler?.bringForward();
+    if (this.selectedObject) {
+      this.selectedObject.bringForward();
+    }
+    console.log(this.handler?.exportJSON());
     this.emitCanvasChange()
   }
 
   bringToFront() {
-    this.handler?.bringToFront();
+    if (this.selectedObject) {
+      this.selectedObject.bringToFront();
+    }
+    console.log(this.handler?.exportJSON());
     this.emitCanvasChange()
   }
 
   sendBackwards() {
-    this.handler?.sendBackwards();
+    if (this.selectedObject) {
+      this.selectedObject.sendBackwards();
+    }
     this.emitCanvasChange()
   }
 
   sendToBack() {
-    this.handler?.sendToBack();
+    if (this.selectedObject) {
+      this.selectedObject.sendToBack();
+    }
     this.emitCanvasChange()
   }
 
@@ -139,8 +160,11 @@ class CurrentBoardStore {
   }
 
   setSelectedObject(selectedObject: fabric.Object | null) {
+    if (selectedObject && '_objects' in selectedObject) {
+      return;
+    }
+    console.log(selectedObject);
     this.selectedObject = selectedObject;
-    console.log("Selected object:", this.selectedObject);
     if (selectedObject) {
       this.color = (selectedObject.get('fill') as string) || '#000000';
       if ('fontSize' in selectedObject) {
@@ -164,14 +188,14 @@ class CurrentBoardStore {
     }
   }
 
-
   setColor(color: string) {
     console.log("Selected object:", this.selectedObject);
     this.color = color;
     if (this.selectedObject) {
+      console.log('xD');
       this.selectedObject.set('fill', color);
       this.canvas?.renderAll();
-      this.canvas?.fire('object:modified', { target: this.selectedObject });
+      this.emitCanvasChange();
     }
   }
 
@@ -180,6 +204,7 @@ class CurrentBoardStore {
     if (this.selectedObject && 'fontSize' in this.selectedObject) {
       (this.selectedObject as fabric.Textbox).set('fontSize', fontSize);
       this.canvas?.renderAll();
+      this.emitCanvasChange();
     } else {
       console.error("Selected object is null or doesn't have fontSize property");
     }
@@ -191,6 +216,7 @@ class CurrentBoardStore {
     if (this.selectedObject && 'fontFamily' in this.selectedObject) {
       (this.selectedObject as fabric.Textbox).set('fontFamily', fontFamily);
       this.canvas?.renderAll();
+      this.emitCanvasChange();
     } else {
       console.error("Selected object is null or doesn't have fontFamily property");
     }

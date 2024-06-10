@@ -84,7 +84,7 @@ const PropertiesPanel: React.FC = observer(() => {
           </Form.Group>
           <Form.Group controlId="formObjectColor">
             <Form.Label>{t('color')}</Form.Label>
-            <SketchPicker color={store.boards.currentBoard.color} onChange={handleColorChange} />
+            <SketchPicker color={store.boards.currentBoard.color} onChangeComplete={handleColorChange} />
           </Form.Group>
           <Button variant="danger" onClick={() => store.boards.currentBoard.removeSelectedObject()}>
             {t('removeObject')}
