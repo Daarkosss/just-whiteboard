@@ -9,12 +9,20 @@ interface AddWhiteboardModalProps {
 
 const AddWhiteboardModal: React.FC<AddWhiteboardModalProps> = ({ show, handleClose, onAddWhiteboard }) => {
   const [newTitle, setNewTitle] = useState('');
+  const [isAddDisabled, setIsAddDisabled] = useState(true);
 
   useEffect(() => {
     if (show) {
       setNewTitle('');
     }
   }, [show]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    console.log(value);
+    setNewTitle(value);
+    setIsAddDisabled(value.length < 5);
+  };
 
   const handleSaveChanges = () => {
     onAddWhiteboard(newTitle);
@@ -33,7 +41,8 @@ const AddWhiteboardModal: React.FC<AddWhiteboardModalProps> = ({ show, handleClo
             <Form.Control
               type="text"
               value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
+              minLength={5}
+              onChange={handleInputChange}
             />
           </Form.Group>
         </Form>
@@ -42,7 +51,7 @@ const AddWhiteboardModal: React.FC<AddWhiteboardModalProps> = ({ show, handleClo
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveChanges}>
+        <Button variant="primary" onClick={handleSaveChanges} disabled={isAddDisabled}>
           Add Whiteboard
         </Button>
       </Modal.Footer>

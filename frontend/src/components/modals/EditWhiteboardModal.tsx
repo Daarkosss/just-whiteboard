@@ -11,16 +11,26 @@ interface EditTitleModalProps {
 
 const EditWhiteBoardModal: React.FC<EditTitleModalProps> = ({ show, handleClose, initialTitle, onSave, title }) => {
   const [newTitle, setNewTitle] = useState(initialTitle);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
   useEffect(() => {
     if (show) {
       setNewTitle(initialTitle);
+      setIsSaveDisabled(initialTitle.length < 5);
     }
   }, [show, initialTitle]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewTitle(value);
+    setIsSaveDisabled(value.length < 5);
+  };
+
   const handleSaveChanges = () => {
-    onSave(newTitle);
-    handleClose();
+    if (!isSaveDisabled) {
+      onSave(newTitle);
+      handleClose();
+    }
   };
 
   return (
@@ -34,8 +44,9 @@ const EditWhiteBoardModal: React.FC<EditTitleModalProps> = ({ show, handleClose,
             <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
+              minLength={5}
               value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
+              onChange={handleInputChange}
             />
           </Form.Group>
         </Form>
@@ -44,7 +55,7 @@ const EditWhiteBoardModal: React.FC<EditTitleModalProps> = ({ show, handleClose,
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveChanges}>
+        <Button variant="primary" onClick={handleSaveChanges} disabled={isSaveDisabled}>
           Save Changes
         </Button>
       </Modal.Footer>
