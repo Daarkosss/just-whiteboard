@@ -13,14 +13,15 @@ const WhiteboardCanvas: React.FC = observer(() => {
     visibility: store.boards.isLoading ? 'hidden' : 'visible',
   } as React.CSSProperties;
 
-
   useEffect(() => {
     const canvas = canvasRef.current?.handler.canvas;
     if (canvas) {
       store.boards.currentBoard.setCanvas(canvas);
       store.boards.currentBoard.setHandler(canvasRef.current?.handler);
-      console.log(canvasRef.current?.handler);
 
+      if (canvasRef.current?.handler) {
+        canvasRef.current.handler.setKeyEvent({transaction: false}); // Turn off undos and redos (Ctrl + Z and Ctrl + Y)
+      }
       const handleSelection = () => {
         const activeObject = canvas.getActiveObject() as fabric.Object | null;
         store.boards.currentBoard.setSelectedObject(activeObject);
@@ -31,6 +32,7 @@ const WhiteboardCanvas: React.FC = observer(() => {
       canvas.on('selection:cleared', () => {
         store.boards.currentBoard.setSelectedObject(null);
       });
+      canvas.on('object:modified', () => store.boards.currentBoard.updateSelectedObjectSize());
 
       const handleMouseMove = (event: fabric.IEvent<MouseEvent>) => {
         const e = event.e as MouseEvent;
@@ -46,6 +48,7 @@ const WhiteboardCanvas: React.FC = observer(() => {
         canvas.off('selection:cleared', () => {
           store.boards.currentBoard.setSelectedObject(null);
         });
+        canvas.off('object:modified', () => store.boards.currentBoard.updateSelectedObjectSize());
         
         canvas.off('mouse:move', handleMouseMove as unknown as (e: fabric.IEvent<Event>) => void);
       };

@@ -149,7 +149,7 @@ class CurrentBoardStore {
     if (selectedObject && '_objects' in selectedObject) {
       return;
     }
-    console.log(selectedObject);
+
     this.selectedObject = selectedObject;
     if (selectedObject) {
       this.color = (selectedObject.get('fill') as string) || '#000000';
@@ -163,14 +163,32 @@ class CurrentBoardStore {
       } else {
         this.fontFamily = '';
       }
-      this.width = selectedObject.width || '';
-      this.height = selectedObject.height || '';
+      if (selectedObject.width && selectedObject.scaleX) {
+        this.width = selectedObject.width * selectedObject.scaleX;
+      } else {
+        this.width = '';
+      }
+      if (selectedObject.height && selectedObject.scaleY) {
+        this.height = selectedObject.height * selectedObject.scaleY;
+      } else {
+        this.height = '';
+      }
     } else {
       this.color = '#000000';
       this.fontSize = '';
       this.fontFamily = '';
       this.width = '';
       this.height = '';
+    }
+  }
+
+  updateSelectedObjectSize() {
+    const activeObject = this.canvas?.getActiveObject() as fabric.Object | null;
+
+    if (this.selectedObject && activeObject && activeObject.scaleX && activeObject.scaleY) {
+      this.width = Math.round(activeObject.scaleX * 100);
+      this.height = Math.round(activeObject.scaleY * 100);
+      this.emitCanvasChange();
     }
   }
 
@@ -212,8 +230,9 @@ class CurrentBoardStore {
   setWidth(width: number) {
     console.log("Setting width to:", width);
     if (this.selectedObject) {
-      this.selectedObject.set('width', width);
+      this.selectedObject.set('scaleX', width / 100);
       this.canvas?.renderAll();
+      this.emitCanvasChange();
     } else {
       console.error("Selected object is null");
     }
@@ -223,8 +242,9 @@ class CurrentBoardStore {
   setHeight(height: number) {
     console.log("Setting height to:", height);
     if (this.selectedObject) {
-      this.selectedObject.set('height', height);
+      this.selectedObject.set('scaleY', height / 100);
       this.canvas?.renderAll();
+      this.emitCanvasChange();
     } else {
       console.error("Selected object is null");
     }

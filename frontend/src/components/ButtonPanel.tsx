@@ -16,7 +16,7 @@ const ButtonPanel: React.FC = observer(() => {
     const canvas = store.boards.currentBoard.canvas;
     if (canvas) {
       const rect = new fabric.Rect({
-        width: 200,
+        width: 100,
         height: 100,
         left: 850,
         top: 400,
