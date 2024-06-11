@@ -33,8 +33,6 @@ class CurrentBoardStore {
       events.forEach(event => {
         this.canvas?.on(event, this.emitCanvasChange);
       });
-
-      this.canvas?.on('object:moving', this.checkPosition);
     }
   }
 
@@ -49,21 +47,9 @@ class CurrentBoardStore {
       events.forEach(event => {
         this.canvas?.off(event, this.emitCanvasChange);
       });
-      this.canvas?.off('object:moving', this.checkPosition);
     }
   }
 
-checkPosition(event: fabric.IEvent) {
-  const target = event.target;
-  if (target && '_objects' in target) {
-    console.log("Group position:", target.left, target.top);
-    target._objects.forEach((obj: fabric.Object) => {
-      console.log("Object in group position:", obj.left, obj.top);
-    });
-  } else if (target) {
-    console.log("Single object position:", target.left, target.top);
-  }
-}
   setCanvas(canvas: fabric.Canvas) {
     this.canvas = canvas;
     this.turnOnListeners();
@@ -78,8 +64,8 @@ checkPosition(event: fabric.IEvent) {
   }
 
   emitCanvasChange = () => {
-    if (!store.boards.isLoading && this.canvas) {
-      const objects = this.canvas.getObjects().map(obj => obj.toJSON());
+    if (!store.boards.isLoading && this.handler) {
+      const objects = this.handler.exportJSON();
       const data = { boardId: this.board?._id, objects };
       socketManager.emitCanvasChange(data);
     }
