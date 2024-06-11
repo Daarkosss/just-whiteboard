@@ -19,3 +19,30 @@ npm install
 ```
 npm run dev
 ```
+
+## How to use migrations?
+
+1. Install migrate-mongo globaly
+```
+npm install -g migrate-mongo
+```
+
+2. Check migration status
+```
+migrate-mongo status
+```
+
+3. Apply all pending migrations
+```
+migrate-mongo up
+```
+
+4. Revert the last aplied migration
+```
+migrate-mongo down
+```
+
+5. Create migration
+```
+migrate-mongo create <your-migration-name>
+```
