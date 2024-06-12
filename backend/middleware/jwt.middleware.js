@@ -22,15 +22,15 @@ const confirmToken = async (req, res, next) => {
     const tokenData = response.data;
 
     if (tokenData.aud !== process.env.GOOGLE_CLIENT_ID || tokenData.exp < Math.floor(Date.now() / 1000)) {
-      return res.status(401).json({ message: 'Invalid token' });
+      return res.status(401).json({ message: 'Invalid token. Log in again.' });
     }
 
     req.user = tokenData;
     next();
   } catch (error) {
     if (error.response) {
-      const status = error.response.status || 500;
-      const message = error.response.data.error_description || 'Error communicating with Google API';
+      const status = 401;
+      const message = error.response.data.error_description || 'Invalid token. Log in again.';
       return res.status(status).json({ message });
     } else if (error.request) {
       return res.status(500).json({ message: 'No response from Google API' });

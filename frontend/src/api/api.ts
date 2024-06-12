@@ -75,6 +75,9 @@ class API {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        store.reset();
+      }
       toast.error(data.message || 'Wrong server response!');
       throw new Error(data.message || 'Wrong server response!');
     } else {

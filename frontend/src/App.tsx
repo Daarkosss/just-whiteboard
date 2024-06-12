@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home';
@@ -9,14 +9,6 @@ import './scss/main.scss';
 import LoginPage from './pages/LoginPage';
 
 const App: React.FC = observer(() => {
-  const location = useLocation();
-
-  useEffect(() => {
-    const protectedRoutes = ['/home', '/whiteboard'];
-    if (protectedRoutes.some(route => location.pathname.startsWith(route))) {
-      store.auth.login();
-    }
-  }, [location]);
 
   return (
     <div>

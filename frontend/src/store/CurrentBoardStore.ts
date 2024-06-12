@@ -6,6 +6,16 @@ import { Board, BoardObject } from '../api/api';
 import store from './RootStore';
 import socketManager from "../api/SocketManager";
 
+export type UserCursor = { 
+  userPhoto: string,
+  mouseLeft: number,
+  mouseTop: number 
+};
+
+export type UsersCursors = {
+  [userId: string]: UserCursor
+}
+
 class CurrentBoardStore {
   board: Board | null = null;
   canvas: fabric.Canvas | null = null;
@@ -16,7 +26,7 @@ class CurrentBoardStore {
   fontFamily = '';
   width: number | '' = '';
   height: number | '' = '';
-  userStore: { [userId: string]: { userPhoto: string, mouseLeft: number, mouseTop: number } } = {};
+  usersCursors: UsersCursors = {};
 
   constructor() {
     makeAutoObservable(this);
@@ -64,9 +74,9 @@ class CurrentBoardStore {
   }
 
   emitCanvasChange = () => {
-    if (!store.boards.isLoading && this.handler) {
+    if (!store.boards.isLoading && this.handler && this.board) {
       const objects = this.handler.exportJSON();
-      const data = { boardId: this.board?._id, objects };
+      const data = { boardId: this.board._id, objects };
       socketManager.emitCanvasChange(data);
     }
   }
@@ -126,23 +136,23 @@ class CurrentBoardStore {
   }
 
   setCursorPosition(mouseLeft: number, mouseTop: number) {
-    const data = { boardId: this.board?._id, mouseLeft, mouseTop};
-    socketManager.emitCursorPosition(data);
+    const cursorPosition = {mouseLeft, mouseTop};
+    socketManager.emitCursorPosition(cursorPosition);
   }
 
-  updateCursorPosition(data: any) {
-    const { userId, userPhoto, mouseLeft, mouseTop } = data;
-    if (this.userStore[userId]) {
-      this.userStore[userId].mouseLeft = mouseLeft;
-      this.userStore[userId].mouseTop = mouseTop;
+  updateCursorPosition(userCursor: { userId: string; userPhoto: string; mouseLeft: number; mouseTop: number }) {
+    const { userId, userPhoto, mouseLeft, mouseTop } = userCursor;
+    if (this.usersCursors[userId]) {
+      this.usersCursors[userId].mouseLeft = mouseLeft;
+      this.usersCursors[userId].mouseTop = mouseTop;
     } else {
-      this.userStore[userId] = { userPhoto, mouseLeft, mouseTop };
+      this.usersCursors[userId] = { userPhoto, mouseLeft, mouseTop };
     }
     // console.log(this.userStore)
   }
 
   getUserPositions() {
-    return this.userStore;
+    return this.usersCursors;
   }
 
   setSelectedObject(selectedObject: fabric.Object | null) {
@@ -271,7 +281,7 @@ class CurrentBoardStore {
     this.fontFamily = '';
     this.width = '';
     this.height = '';
-    this.userStore = {};
+    this.usersCursors = {};
   }
 }
 

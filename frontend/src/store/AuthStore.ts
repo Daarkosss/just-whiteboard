@@ -66,6 +66,7 @@ class AuthStore {
   }
 
   reset() {
+    console.log('Reset');
     this.user = null;
     localStorage.removeItem('user');
   }

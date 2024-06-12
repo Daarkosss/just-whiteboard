@@ -1,11 +1,17 @@
 // src/socket/SocketManager.ts
 import { io, Socket } from "socket.io-client";
-import { BoardObject, SOCKET_BASE_URL } from "../api/api";
+import { SOCKET_BASE_URL } from "../api/api";
 import store from "../store/RootStore";
+import { FabricObject } from "react-design-editor";
 
 export type BoardIdWithObjects = {
   boardId: string;
-  objects: BoardObject[];
+  objects: FabricObject<fabric.Object>[];
+}
+
+export type CursorPosition = {
+  mouseLeft: number;
+  mouseTop: number;
 }
 
 class SocketManager {
@@ -47,20 +53,25 @@ class SocketManager {
     });
   }
 
-  emitCanvasChange(data: any) {
-    console.log('Emitting canvas change:', data);
-    if (data.boardId) {
-      this.socket?.emit('canvas-change', data);
+  emitCanvasChange(boardWithObjects: BoardIdWithObjects) {
+    console.log('Emitting canvas change:', boardWithObjects);
+    if (boardWithObjects.boardId) {
+      this.socket?.emit('canvas-change', boardWithObjects);
     }
   }
 
-  emitCursorPosition(data: any) {
-    const { boardId, mouseLeft, mouseTop } = data;
-    if (boardId !== this.boardId) {
-      return;
+  emitCursorPosition(cursorPosition: CursorPosition) {
+    const { mouseLeft, mouseTop } = cursorPosition;
+    if (store.boards.currentBoard.board?._id && store.auth.user?._id && store.auth.user?.avatar) {
+      const cursorData = {
+        boardId: store.boards.currentBoard.board?._id,
+        userId: store.auth.user?._id,
+        userPhoto: store.auth.user?.avatar,
+        mouseLeft: mouseLeft,
+        mouseTop: mouseTop
+      };
+      this.socket?.emit('cursor-position', cursorData);
     }
-    data = {boardId: boardId, userId: store.auth.user?._id, userPhoto: store.auth.user?.avatar, mouseLeft: mouseLeft, mouseTop: mouseTop};
-    this.socket?.emit('cursor-position', data);
   }
 
   disconnect(boardId: string) {
