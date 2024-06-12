@@ -75,8 +75,8 @@ class SocketManager {
   }
 
   disconnect(boardId: string) {
-    if (this.socket) {
-      this.socket.emit('leaveBoard', boardId, store.auth.user?._id);
+    if (this.socket && store.auth.user?._id) {
+      this.socket.emit('leaveBoard', boardId, store.auth.user._id);
       this.socket.disconnect();
     }
   }

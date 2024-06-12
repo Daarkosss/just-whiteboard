@@ -90,12 +90,16 @@ class API {
     path: string,
     body?: unknown
   ): Promise<T> {
-    return this.fetch<T>(
-      method,
-      path,
-      body,
-      { 'Authorization': `Bearer ${store.auth.user?.userToken}` },
-    );
+    if (store.auth.user?.userToken) {
+      return this.fetch<T>(
+        method,
+        path,
+        body,
+        { 'Authorization': `Bearer ${store.auth.user.userToken}` },
+      );
+    } else {
+      return Promise.reject(new Error('No user token available'));
+    }
   }
 
   async login(): Promise<User | null> {
@@ -115,7 +119,6 @@ class API {
 
   // Get all boards for the current user
   async getBoards(): Promise<Board[]> {
-    console.log(store.auth.user?._id);
     return this.authorizedFetch<Board[]>('GET', `user/boards?userID=${store.auth.user?._id}`);
   }
 
